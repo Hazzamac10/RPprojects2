@@ -751,8 +751,8 @@ body::before {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: fadeInUp 0.5s ease-out 0.1s both;
-    filter: var(--heading-glow-filter, drop-shadow(0 2px 10px rgba(35, 134, 255, 0.2)));
-    text-shadow: var(--heading-glow-shadow, 0 0 30px rgba(35, 134, 255, 0.1));
+    filter: var(--heading-glow-filter, none);
+    text-shadow: var(--heading-glow-shadow, none);
 }
 
 .hero-subtitle {
@@ -935,7 +935,7 @@ body::before {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 10px rgba(35, 134, 255, 0.3));
+    filter: none;
     position: relative;
 }
 
