@@ -3309,25 +3309,14 @@ function initDragMode() {
     const handleMouseDown = (e) => {
         if (!dragModeActive) return;
         
-        // Check if clicked on image or inside figure containing image
-        let img = null;
+        // Find the portfolio item container
+        let portfolioItem = null;
         const clickedElement = e.target;
         
-        // First check if clicked directly on an image
-        if (clickedElement.tagName === 'IMG' && clickedElement.classList.contains('draggable-image')) {
-            img = clickedElement;
-        } else {
-            // Check if clicked inside a portfolio item
-            const figure = clickedElement.closest('figure.portfolio-item');
-            if (figure) {
-                img = figure.querySelector('.portfolio-img.draggable-image');
-            } else {
-                // Check if clicked on a portfolio image
-                img = clickedElement.closest('.portfolio-img.draggable-image');
-            }
-        }
+        // Check if clicked inside a portfolio item
+        portfolioItem = clickedElement.closest('figure.portfolio-item.draggable');
         
-        if (!img) return;
+        if (!portfolioItem) return;
 
         // Prevent lightbox from opening
         e.preventDefault();
@@ -3335,26 +3324,25 @@ function initDragMode() {
         e.stopImmediatePropagation();
         
         isDragging = false;
-        draggedElement = img;
-        const rect = img.getBoundingClientRect();
+        draggedElement = portfolioItem;
+        const rect = portfolioItem.getBoundingClientRect();
         offset.x = e.clientX - rect.left;
         offset.y = e.clientY - rect.top;
         startX = e.clientX;
         startY = e.clientY;
         
         // Store initial position if not already stored
-        if (!img.dataset.initialLeft) {
-            img.dataset.initialLeft = rect.left + window.scrollX + 'px';
-            img.dataset.initialTop = rect.top + window.scrollY + 'px';
+        if (!portfolioItem.dataset.initialLeft) {
+            portfolioItem.dataset.initialLeft = rect.left + window.scrollX + 'px';
+            portfolioItem.dataset.initialTop = rect.top + window.scrollY + 'px';
         }
 
-        img.classList.add('dragging');
-        img.style.position = 'fixed';
-        img.style.zIndex = '10000';
-        img.style.pointerEvents = 'none';
-        img.style.cursor = 'grabbing';
-        img.style.width = rect.width + 'px';
-        img.style.height = rect.height + 'px';
+        portfolioItem.classList.add('dragging');
+        portfolioItem.style.position = 'fixed';
+        portfolioItem.style.zIndex = '10000';
+        portfolioItem.style.width = rect.width + 'px';
+        portfolioItem.style.left = rect.left + 'px';
+        portfolioItem.style.top = rect.top + 'px';
         
         document.body.style.userSelect = 'none';
     };
@@ -3365,8 +3353,8 @@ function initDragMode() {
         const deltaX = Math.abs(e.clientX - startX);
         const deltaY = Math.abs(e.clientY - startY);
         
-        // Start dragging if moved more than 5 pixels
-        if (!isDragging && (deltaX > 5 || deltaY > 5)) {
+        // Start dragging if moved more than 3 pixels
+        if (!isDragging && (deltaX > 3 || deltaY > 3)) {
             isDragging = true;
         }
         
@@ -3383,11 +3371,15 @@ function initDragMode() {
             if (isDragging) {
                 e.preventDefault();
                 e.stopPropagation();
+            } else {
+                // If it was just a click, restore position
+                if (draggedElement.dataset.initialLeft && draggedElement.dataset.initialTop) {
+                    draggedElement.style.left = draggedElement.dataset.initialLeft;
+                    draggedElement.style.top = draggedElement.dataset.initialTop;
+                }
             }
             
             draggedElement.classList.remove('dragging');
-            draggedElement.style.pointerEvents = '';
-            draggedElement.style.cursor = 'grab';
             draggedElement = null;
             isDragging = false;
             document.body.style.userSelect = '';
@@ -3398,46 +3390,37 @@ function initDragMode() {
     const handleTouchStart = (e) => {
         if (!dragModeActive) return;
         
-        let img = null;
+        let portfolioItem = null;
         const clickedElement = e.target;
         
-        if (clickedElement.tagName === 'IMG' && clickedElement.classList.contains('draggable-image')) {
-            img = clickedElement;
-        } else {
-            const figure = clickedElement.closest('figure.portfolio-item');
-            if (figure) {
-                img = figure.querySelector('.portfolio-img.draggable-image');
-            } else {
-                img = clickedElement.closest('.portfolio-img.draggable-image');
-            }
-        }
+        portfolioItem = clickedElement.closest('figure.portfolio-item.draggable');
         
-        if (!img) return;
+        if (!portfolioItem) return;
 
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
         isDragging = false;
-        draggedElement = img;
+        draggedElement = portfolioItem;
         const touch = e.touches[0];
-        const rect = img.getBoundingClientRect();
+        const rect = portfolioItem.getBoundingClientRect();
         offset.x = touch.clientX - rect.left;
         offset.y = touch.clientY - rect.top;
         startX = touch.clientX;
         startY = touch.clientY;
         
-        if (!img.dataset.initialLeft) {
-            img.dataset.initialLeft = rect.left + window.scrollX + 'px';
-            img.dataset.initialTop = rect.top + window.scrollY + 'px';
+        if (!portfolioItem.dataset.initialLeft) {
+            portfolioItem.dataset.initialLeft = rect.left + window.scrollX + 'px';
+            portfolioItem.dataset.initialTop = rect.top + window.scrollY + 'px';
         }
 
-        img.classList.add('dragging');
-        img.style.position = 'fixed';
-        img.style.zIndex = '10000';
-        img.style.pointerEvents = 'none';
-        img.style.width = rect.width + 'px';
-        img.style.height = rect.height + 'px';
+        portfolioItem.classList.add('dragging');
+        portfolioItem.style.position = 'fixed';
+        portfolioItem.style.zIndex = '10000';
+        portfolioItem.style.width = rect.width + 'px';
+        portfolioItem.style.left = rect.left + 'px';
+        portfolioItem.style.top = rect.top + 'px';
     };
 
     const handleTouchMove = (e) => {
@@ -3446,7 +3429,7 @@ function initDragMode() {
         const deltaX = Math.abs(touch.clientX - startX);
         const deltaY = Math.abs(touch.clientY - startY);
         
-        if (!isDragging && (deltaX > 5 || deltaY > 5)) {
+        if (!isDragging && (deltaX > 3 || deltaY > 3)) {
             isDragging = true;
         }
         
@@ -3459,8 +3442,11 @@ function initDragMode() {
 
     const handleTouchEnd = () => {
         if (draggedElement) {
+            if (!isDragging && draggedElement.dataset.initialLeft && draggedElement.dataset.initialTop) {
+                draggedElement.style.left = draggedElement.dataset.initialLeft;
+                draggedElement.style.top = draggedElement.dataset.initialTop;
+            }
             draggedElement.classList.remove('dragging');
-            draggedElement.style.pointerEvents = '';
             draggedElement = null;
             isDragging = false;
         }
@@ -3493,17 +3479,15 @@ function initDragMode() {
                 touchHandlersAdded = true;
             }
             
-            images.forEach(img => {
-                img.classList.add('draggable-image');
-                img.style.cursor = 'grab';
-                img.style.userSelect = 'none';
-                img.style.pointerEvents = 'auto';
+            items.forEach(item => {
+                item.classList.add('draggable');
                 // Disable lightbox by adding data attribute
-                img.dataset.dragMode = 'true';
+                item.dataset.dragMode = 'true';
             });
             
-            items.forEach(item => {
-                item.style.cursor = 'grab';
+            images.forEach(img => {
+                img.classList.add('draggable-image');
+                img.style.userSelect = 'none';
             });
         } else {
             // Remove event listeners
@@ -3519,26 +3503,23 @@ function initDragMode() {
                 touchHandlersAdded = false;
             }
             
-            images.forEach(img => {
-                img.classList.remove('draggable-image');
-                img.style.cursor = '';
-                img.style.userSelect = '';
-                img.style.pointerEvents = '';
-                delete img.dataset.dragMode;
+            items.forEach(item => {
+                item.classList.remove('draggable', 'dragging');
+                delete item.dataset.dragMode;
                 
                 // Reset position if needed
-                if (img.dataset.initialLeft && img.dataset.initialTop) {
-                    img.style.position = '';
-                    img.style.left = '';
-                    img.style.top = '';
-                    img.style.zIndex = '';
-                    img.style.width = '';
-                    img.style.height = '';
+                if (item.dataset.initialLeft && item.dataset.initialTop) {
+                    item.style.position = '';
+                    item.style.left = '';
+                    item.style.top = '';
+                    item.style.zIndex = '';
+                    item.style.width = '';
                 }
             });
             
-            items.forEach(item => {
-                item.style.cursor = '';
+            images.forEach(img => {
+                img.classList.remove('draggable-image');
+                img.style.userSelect = '';
             });
         }
     });
@@ -3771,7 +3752,8 @@ function initPortfolioLightbox() {
         img.style.cursor = 'zoom-in';
         img.addEventListener('click', (e) => {
             // Don't open lightbox if drag mode is active
-            if (img.dataset.dragMode === 'true' || img.classList.contains('draggable-image')) {
+            const portfolioItem = img.closest('figure.portfolio-item');
+            if (portfolioItem && (portfolioItem.dataset.dragMode === 'true' || portfolioItem.classList.contains('draggable'))) {
                 e.preventDefault();
                 e.stopPropagation();
                 return;
