@@ -1,0 +1,20 @@
+# Environment Variables Setup
+
+Copy these variables into Railway/Render dashboard:
+
+# For IONOS Email:
+EMAIL_USER=info@rpprojects.co.uk
+EMAIL_PASS=your_ionos_email_password
+
+# For Outlook (if not using IONOS):
+# EMAIL_USER=hhmccarthy26@outlook.com
+# EMAIL_PASS=your_outlook_app_password_here
+
+PORT=3000 (usually auto-set by platform)
+
+# IONOS SMTP Settings (update server.js if using IONOS):
+# SMTP Server: smtp.ionos.co.uk
+# Port: 465 (SSL) or 587 (TLS)
+# Username: info@rpprojects.co.uk
+# Password: Your IONOS email password
+

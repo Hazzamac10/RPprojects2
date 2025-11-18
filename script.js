@@ -2960,31 +2960,74 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     // FormSubmit handles form submission automatically
-    // Add simple form handler for better UX
     initFormSubmitHandler();
 });
 
-// Simple form handler for FormSubmit (improves UX)
+// Contact form handler for custom server
 function initFormSubmitHandler() {
-    const form = document.querySelector('form[action*="formsubmit.co"]');
+    const form = document.getElementById('contactForm');
     const formMessage = document.getElementById('formMessage');
     const submitBtn = document.getElementById('submitBtn');
     
     if (!form) return;
 
-    form.addEventListener('submit', (e) => {
+    // Replace this URL with your server URL after deployment
+    // Example: 'https://your-project.railway.app/api/contact'
+    // Or: 'https://rpprojects-contact.onrender.com/api/contact'
+    const SERVER_URL = 'YOUR_SERVER_URL_HERE/api/contact';
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
         const originalBtnText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = 'Sending...';
-        
-        // Show success message after a short delay (FormSubmit redirects, but this provides immediate feedback)
-        setTimeout(() => {
-            if (formMessage) {
+        formMessage.style.display = 'none';
+
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            'project-type': document.getElementById('project-type').value,
+            message: document.getElementById('message').value
+        };
+
+        try {
+            const response = await fetch(SERVER_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Success
                 formMessage.style.display = 'block';
                 formMessage.className = 'form-message form-message-success';
-                formMessage.textContent = 'Thank you! Your message has been sent. We\'ll get back to you soon.';
+                formMessage.textContent = data.message || 'Thank you! Your message has been sent. We\'ll get back to you soon.';
+                form.reset();
+            } else {
+                throw new Error(data.error || 'Failed to send message');
             }
-        }, 500);
+        } catch (error) {
+            // Error
+            formMessage.style.display = 'block';
+            formMessage.className = 'form-message form-message-error';
+            formMessage.textContent = 'Sorry, there was an error sending your message. Please try again or contact us directly at info@rpprojects.co.uk';
+            console.error('Error:', error);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            
+            // Scroll to message
+            if (formMessage.style.display === 'block') {
+                formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
     });
 }
 
