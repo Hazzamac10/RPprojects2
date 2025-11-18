@@ -2118,6 +2118,45 @@ class BuildingGenerator {
             navbar.style.borderBottom = '1px solid transparent';
         });
 
+        // Theme switcher
+        this.setupThemeSwitcher();
+    }
+
+    setupThemeSwitcher() {
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const body = document.body;
+        
+        // Load saved theme or default to modern
+        const savedTheme = localStorage.getItem('websiteTheme') || 'modern';
+        body.setAttribute('data-theme', savedTheme);
+        themeButtons.forEach(btn => {
+            if (btn.dataset.theme === savedTheme) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Theme button click handlers
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.dataset.theme;
+                
+                // Remove active class from all buttons
+                themeButtons.forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Apply theme to body
+                body.setAttribute('data-theme', theme);
+                
+                // Save theme preference
+                localStorage.setItem('websiteTheme', theme);
+            });
+        });
+    }
+
         // Contact form handling
         const contactForm = document.querySelector('.contact-form');
         if (contactForm) {

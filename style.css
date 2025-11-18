@@ -236,6 +236,48 @@ body::before {
     align-items: center;
 }
 
+.theme-switcher {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.25rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(35, 134, 255, 0.1);
+}
+
+.theme-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+}
+
+.theme-btn:hover {
+    background: rgba(35, 134, 255, 0.1);
+    transform: translateY(-2px);
+    color: var(--accent-color);
+}
+
+.theme-btn.active {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(35, 134, 255, 0.3);
+}
+
 .btn-mini {
     padding: 0.625rem 1.25rem;
     border: 2px solid var(--accent-color);
@@ -1282,4 +1324,177 @@ body {
 
 body.page-loaded {
     opacity: 1;
+}
+
+/* Theme Styles */
+body[data-theme="modern"] {
+    /* Current modern theme - default */
+}
+
+body[data-theme="dark"] {
+    --primary-color: #0a0a0a;
+    --secondary-color: #1a1a1a;
+    --accent-color: #00d4ff;
+    --accent-hover: #00b8e6;
+    --accent-light: #33e0ff;
+    --text-primary: #e5e7eb;
+    --text-secondary: #d1d5db;
+    --text-light: #9ca3af;
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #252525;
+    --bg-accent: #1f1f1f;
+    --border-color: #2a2a2a;
+    --border-light: #333333;
+    --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    --gradient-hero: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+body[data-theme="dark"] .navbar {
+    background: rgba(15, 15, 15, 0.9);
+    border-bottom-color: rgba(0, 212, 255, 0.2);
+    box-shadow: 0 2px 30px rgba(0, 212, 255, 0.1);
+}
+
+body[data-theme="dark"] .nav-menu {
+    background: rgba(26, 26, 26, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+body[data-theme="dark"] .nav-link {
+    color: #00d4ff;
+}
+
+body[data-theme="dark"] .hero {
+    background: var(--bg-primary);
+}
+
+body[data-theme="dark"] .service-card,
+body[data-theme="dark"] .portfolio-item,
+body[data-theme="dark"] .contact-form {
+    background: rgba(26, 26, 26, 0.9);
+    border-color: rgba(0, 212, 255, 0.2);
+}
+
+body[data-theme="bold"] {
+    --primary-color: #0a0a0a;
+    --secondary-color: #1a1a1a;
+    --accent-color: #ff6b35;
+    --accent-hover: #e55a2b;
+    --accent-light: #ff8c5a;
+    --text-primary: #1a1a1a;
+    --text-secondary: #2d2d2d;
+    --text-light: #4a4a4a;
+    --bg-primary: #ffffff;
+    --bg-secondary: #fff5f0;
+    --bg-tertiary: #ffe8e0;
+    --bg-accent: #fff0eb;
+    --border-color: #ffd4c4;
+    --border-light: #ffe8e0;
+    --gradient-primary: linear-gradient(135deg, #ff6b35 0%, #ff4757 50%, #ff6348 100%);
+    --gradient-hero: linear-gradient(180deg, #ffffff 0%, #fff5f0 100%);
+}
+
+body[data-theme="bold"] .navbar {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom-color: rgba(255, 107, 53, 0.3);
+    box-shadow: 0 2px 30px rgba(255, 107, 53, 0.15);
+}
+
+body[data-theme="bold"] .nav-menu {
+    background: rgba(255, 245, 240, 0.9);
+    border: 2px solid rgba(255, 107, 53, 0.2);
+}
+
+body[data-theme="bold"] .nav-link {
+    color: #ff6b35;
+    font-weight: 700;
+}
+
+body[data-theme="bold"] .hero-title,
+body[data-theme="bold"] .section-title {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff4757 50%, #ff6348 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body[data-theme="bold"] .service-card,
+body[data-theme="bold"] .portfolio-item,
+body[data-theme="bold"] .contact-form {
+    border: 2px solid rgba(255, 107, 53, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.1);
+}
+
+body[data-theme="bold"] .service-card:hover,
+body[data-theme="bold"] .portfolio-item:hover {
+    border-color: rgba(255, 107, 53, 0.5);
+    box-shadow: 0 8px 30px rgba(255, 107, 53, 0.2);
+}
+
+body[data-theme="elegant"] {
+    --primary-color: #1a1a1a;
+    --secondary-color: #2d2d2d;
+    --accent-color: #8b7355;
+    --accent-hover: #6b5a42;
+    --accent-light: #a68b6b;
+    --text-primary: #2c2416;
+    --text-secondary: #4a3d2a;
+    --text-light: #6b5a42;
+    --bg-primary: #faf8f5;
+    --bg-secondary: #f5f2ed;
+    --bg-tertiary: #efe9e0;
+    --bg-accent: #f8f5f0;
+    --border-color: #d4c4b0;
+    --border-light: #e8ddd0;
+    --gradient-primary: linear-gradient(135deg, #8b7355 0%, #6b5a42 100%);
+    --gradient-hero: linear-gradient(180deg, #faf8f5 0%, #f5f2ed 100%);
+}
+
+body[data-theme="elegant"] .navbar {
+    background: rgba(250, 248, 245, 0.95);
+    border-bottom: 2px solid rgba(139, 115, 85, 0.2);
+    box-shadow: 0 2px 20px rgba(139, 115, 85, 0.1);
+}
+
+body[data-theme="elegant"] .nav-menu {
+    background: rgba(245, 242, 237, 0.9);
+    border: 1px solid rgba(139, 115, 85, 0.2);
+    border-radius: 8px;
+}
+
+body[data-theme="elegant"] .nav-link {
+    color: #8b7355;
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+    text-transform: capitalize;
+    letter-spacing: 0.05em;
+}
+
+body[data-theme="elegant"] .hero-title,
+body[data-theme="elegant"] .section-title {
+    color: #2c2416;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+}
+
+body[data-theme="elegant"] .service-card,
+body[data-theme="elegant"] .portfolio-item,
+body[data-theme="elegant"] .contact-form {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(139, 115, 85, 0.15);
+    box-shadow: 0 2px 15px rgba(139, 115, 85, 0.08);
+}
+
+body[data-theme="elegant"] .btn-primary {
+    background: #8b7355;
+    color: white;
+    border-radius: 4px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+}
+
+body[data-theme="elegant"] .btn-primary:hover {
+    background: #6b5a42;
 }
