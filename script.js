@@ -2126,6 +2126,11 @@ class BuildingGenerator {
         const themeButtons = document.querySelectorAll('.theme-btn');
         const body = document.body;
         
+        if (themeButtons.length === 0) {
+            console.warn('Theme buttons not found');
+            return;
+        }
+        
         // Load saved theme or default to modern
         const savedTheme = localStorage.getItem('websiteTheme') || 'modern';
         body.setAttribute('data-theme', savedTheme);
@@ -2139,8 +2144,12 @@ class BuildingGenerator {
 
         // Theme button click handlers
         themeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const theme = btn.dataset.theme;
+                
+                console.log('Theme button clicked:', theme);
                 
                 // Remove active class from all buttons
                 themeButtons.forEach(b => b.classList.remove('active'));
@@ -2153,6 +2162,8 @@ class BuildingGenerator {
                 
                 // Save theme preference
                 localStorage.setItem('websiteTheme', theme);
+                
+                console.log('Theme applied:', theme);
             });
         });
     }
@@ -2960,8 +2971,15 @@ function hslToRgb(h, s, l) {
 // Initialize the application when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     initPreloader();
-    new BuildingGenerator();
+    const generator = new BuildingGenerator();
     initThemeSwitcher();
+    
+    // Ensure theme switcher runs after a short delay to catch any late-rendered elements
+    setTimeout(() => {
+        if (generator && typeof generator.setupThemeSwitcher === 'function') {
+            generator.setupThemeSwitcher();
+        }
+    }, 100);
     // Only apply auto-logo theme if no saved theme
     // Force derive theme from logo on every load to ensure brand color takes effect
     applyThemeFromLogo();
