@@ -340,6 +340,11 @@ body::before {
     opacity: 0.95;
 }
 
+/* Keep dragged items in their dropped position */
+.portfolio-item.draggable[style*="position: fixed"] {
+    transition: none !important;
+}
+
 .portfolio-item.draggable .portfolio-img {
     pointer-events: none;
 }

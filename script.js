@@ -3304,6 +3304,7 @@ function initDragMode() {
     let isDragging = false;
     let startX = 0;
     let startY = 0;
+    let placeholder = null;
 
     // Use capture phase to intercept events before lightbox handlers
     const handleMouseDown = (e) => {
@@ -3339,6 +3340,15 @@ function initDragMode() {
             portfolioItem.dataset.initialTop = rect.top + window.scrollY + 'px';
         }
 
+        // Create placeholder to prevent layout shift
+        placeholder = document.createElement('div');
+        placeholder.style.width = rect.width + 'px';
+        placeholder.style.height = rect.height + 'px';
+        placeholder.style.visibility = 'hidden';
+        placeholder.style.pointerEvents = 'none';
+        placeholder.style.flexShrink = '0';
+        portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
+
         portfolioItem.classList.add('dragging');
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
@@ -3362,8 +3372,11 @@ function initDragMode() {
         
         if (isDragging) {
             e.preventDefault();
-            draggedElement.style.left = (e.clientX - offset.x) + 'px';
-            draggedElement.style.top = (e.clientY - offset.y) + 'px';
+            // Use exact mouse position minus offset for precise tracking
+            const newLeft = e.clientX - offset.x;
+            const newTop = e.clientY - offset.y;
+            draggedElement.style.left = newLeft + 'px';
+            draggedElement.style.top = newTop + 'px';
         }
     };
     
@@ -3373,12 +3386,24 @@ function initDragMode() {
             if (isDragging) {
                 e.preventDefault();
                 e.stopPropagation();
+                
+                // Keep the item at its current position (don't reset)
+                // The item stays where it was dropped
             } else {
                 // If it was just a click, restore position
                 if (draggedElement.dataset.initialLeft && draggedElement.dataset.initialTop) {
-                    draggedElement.style.left = draggedElement.dataset.initialLeft;
-                    draggedElement.style.top = draggedElement.dataset.initialTop;
+                    draggedElement.style.position = '';
+                    draggedElement.style.left = '';
+                    draggedElement.style.top = '';
+                    draggedElement.style.width = '';
+                    draggedElement.style.zIndex = '';
                 }
+            }
+            
+            // Remove placeholder
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+                placeholder = null;
             }
             
             draggedElement.classList.remove('dragging');
@@ -3417,6 +3442,15 @@ function initDragMode() {
             portfolioItem.dataset.initialTop = rect.top + window.scrollY + 'px';
         }
 
+        // Create placeholder to prevent layout shift
+        placeholder = document.createElement('div');
+        placeholder.style.width = rect.width + 'px';
+        placeholder.style.height = rect.height + 'px';
+        placeholder.style.visibility = 'hidden';
+        placeholder.style.pointerEvents = 'none';
+        placeholder.style.flexShrink = '0';
+        portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
+
         portfolioItem.classList.add('dragging');
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
@@ -3437,17 +3471,30 @@ function initDragMode() {
         
         if (isDragging) {
             e.preventDefault();
-            draggedElement.style.left = (touch.clientX - offset.x) + 'px';
-            draggedElement.style.top = (touch.clientY - offset.y) + 'px';
+            // Use exact touch position minus offset for precise tracking
+            const newLeft = touch.clientX - offset.x;
+            const newTop = touch.clientY - offset.y;
+            draggedElement.style.left = newLeft + 'px';
+            draggedElement.style.top = newTop + 'px';
         }
     };
 
     const handleTouchEnd = () => {
         if (draggedElement) {
             if (!isDragging && draggedElement.dataset.initialLeft && draggedElement.dataset.initialTop) {
-                draggedElement.style.left = draggedElement.dataset.initialLeft;
-                draggedElement.style.top = draggedElement.dataset.initialTop;
+                draggedElement.style.position = '';
+                draggedElement.style.left = '';
+                draggedElement.style.top = '';
+                draggedElement.style.width = '';
+                draggedElement.style.zIndex = '';
             }
+            
+            // Remove placeholder
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+                placeholder = null;
+            }
+            
             draggedElement.classList.remove('dragging');
             draggedElement = null;
             isDragging = false;
