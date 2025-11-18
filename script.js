@@ -3027,7 +3027,6 @@ function initCustomizePanel() {
     const STORAGE_KEY = 'custom-theme-vars';
     const root = document.documentElement;
     let customVars = {};
-    const inputs = panel.querySelectorAll('[data-var]');
 
     try {
         customVars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -3035,91 +3034,92 @@ function initCustomizePanel() {
         customVars = {};
     }
 
+    const toNumber = (val) => {
+        const num = parseFloat(val);
+        return Number.isFinite(num) ? num : null;
+    };
+
     const applyCustomVars = () => {
         const setVar = (name, value) => {
-            if (value !== undefined && value !== null && value !== '') root.style.setProperty(name, value);
-            else root.style.removeProperty(name);
+            if (value !== undefined && value !== null && value !== '') {
+                root.style.setProperty(name, value);
+            } else {
+                root.style.removeProperty(name);
+            }
         };
 
         if (customVars.primary) {
+            const angle = toNumber(customVars.gradientAngle) ?? 135;
             setVar('--primary-color', customVars.primary);
             setVar('--brand-primary', customVars.primary);
-            setVar('--gradient-primary', `linear-gradient(135deg, ${customVars.primary}1a, ${customVars.primary})`);
-            if (!customVars.text) setVar('--heading-gradient-start', customVars.primary);
+            setVar('--accent-color', customVars.primary);
+            setVar('--brand-accent', customVars.primary);
+            setVar('--heading-gradient-end', customVars.primary);
+            setVar('--gradient-primary', `linear-gradient(${angle}deg, ${customVars.primary}1a, ${customVars.primary})`);
         } else {
-            ['--primary-color','--brand-primary','--gradient-primary'].forEach(name => root.style.removeProperty(name));
-            if (!customVars.text) root.style.removeProperty('--heading-gradient-start');
+            ['--primary-color','--brand-primary','--accent-color','--brand-accent','--heading-gradient-end','--gradient-primary'].forEach(v => root.style.removeProperty(v));
         }
 
         if (customVars.accent) {
-            setVar('--accent-color', customVars.accent);
-            setVar('--accent-hover', adjustLightness(customVars.accent, -0.15));
-            setVar('--accent-light', adjustLightness(customVars.accent, 0.2));
-            setVar('--heading-gradient-end', customVars.accent);
-            if (!customVars.navText) setVar('--nav-link-color', customVars.accent);
+            setVar('--heading-gradient-start', customVars.accent);
         } else {
-            ['--accent-color','--accent-hover','--accent-light','--heading-gradient-end'].forEach(name => root.style.removeProperty(name));
-            if (!customVars.navText) root.style.removeProperty('--nav-link-color');
+            root.style.removeProperty('--heading-gradient-start');
         }
 
         if (customVars.background) {
             ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(v => setVar(v, customVars.background));
         } else {
-            ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(name => root.style.removeProperty(name));
+            ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(v => root.style.removeProperty(v));
         }
 
         if (customVars.text) {
             setVar('--text-primary', customVars.text);
             setVar('--text-secondary', customVars.text);
-            setVar('--heading-gradient-start', customVars.text);
         } else {
-            ['--text-primary','--text-secondary'].forEach(name => root.style.removeProperty(name));
-            if (!customVars.primary) root.style.removeProperty('--heading-gradient-start');
+            ['--text-primary','--text-secondary'].forEach(v => root.style.removeProperty(v));
         }
 
         if (customVars.navBg) {
-            setVar('--navbar-bg', hexToRgba(customVars.navBg, 0.9));
+            setVar('--navbar-bg', customVars.navBg);
         } else {
             root.style.removeProperty('--navbar-bg');
         }
 
         if (customVars.navText) {
             setVar('--nav-link-color', customVars.navText);
-        } else if (!customVars.accent) {
+        } else {
             root.style.removeProperty('--nav-link-color');
         }
 
-        if (customVars.gradientAngle) {
-            setVar('--gradient-angle', `${customVars.gradientAngle}deg`);
+        const gradientAngleVal = toNumber(customVars.gradientAngle);
+        if (gradientAngleVal !== null) {
+            setVar('--heading-gradient-angle', `${gradientAngleVal}deg`);
+            if (customVars.primary) {
+                setVar('--gradient-primary', `linear-gradient(${gradientAngleVal}deg, ${customVars.primary}1a, ${customVars.primary})`);
+            }
         } else {
-            root.style.removeProperty('--gradient-angle');
+            root.style.removeProperty('--heading-gradient-angle');
         }
 
-        if (customVars.logoHue) {
-            setVar('--logo-hue', `${customVars.logoHue}deg`);
-        } else {
-            root.style.removeProperty('--logo-hue');
-        }
+        const logoHue = toNumber(customVars.logoHue);
+        if (logoHue !== null) setVar('--logo-hue', `${logoHue}deg`);
+        else root.style.removeProperty('--logo-hue');
 
-        if (customVars.logoSat) {
-            setVar('--logo-sat', (Number(customVars.logoSat) / 100).toString());
-        } else {
-            root.style.removeProperty('--logo-sat');
-        }
+        const logoSat = toNumber(customVars.logoSat);
+        if (logoSat !== null) setVar('--logo-sat', (logoSat / 100).toString());
+        else root.style.removeProperty('--logo-sat');
 
-        if (customVars.logoBright) {
-            setVar('--logo-bright', (Number(customVars.logoBright) / 100).toString());
-        } else {
-            root.style.removeProperty('--logo-bright');
-        }
+        const logoBright = toNumber(customVars.logoBright);
+        if (logoBright !== null) setVar('--logo-bright', (logoBright / 100).toString());
+        else root.style.removeProperty('--logo-bright');
     };
 
     const syncInputs = () => {
-        inputs.forEach(input => {
+        panel.querySelectorAll('[data-var]').forEach(input => {
             const key = input.dataset.var;
             if (customVars[key] !== undefined) {
                 input.value = customVars[key];
-            } else if (input.dataset.default) {
+            } else if (input.dataset.default !== undefined) {
                 input.value = input.dataset.default;
             }
         });
@@ -3142,10 +3142,18 @@ function initCustomizePanel() {
         }
     });
 
-    inputs.forEach(input => {
+    panel.querySelectorAll('[data-var]').forEach(input => {
         const key = input.dataset.var;
         input.addEventListener('input', () => {
-            customVars[key] = input.value;
+            let value = input.value;
+            if (input.type === 'range') {
+                value = input.value;
+            }
+            if (input.dataset.default !== undefined && value === input.dataset.default) {
+                delete customVars[key];
+            } else {
+                customVars[key] = value;
+            }
             applyCustomVars();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(customVars));
             localStorage.removeItem('site-theme');
@@ -3158,8 +3166,9 @@ function initCustomizePanel() {
         resetBtn.addEventListener('click', () => {
             customVars = {};
             localStorage.removeItem(STORAGE_KEY);
-            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--accent-hover','--accent-light'].forEach(name => root.style.removeProperty(name));
+            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright'].forEach(v => root.style.removeProperty(v));
             syncInputs();
+            applyCustomVars();
         });
     }
 }
@@ -3676,25 +3685,4 @@ function hexToRgb(hex) {
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
     return [r, g, b];
-}
-
-function adjustLightness(hex, delta) {
-    try {
-        const [r, g, b] = hexToRgb(hex);
-        let { h, s, l } = rgbToHsl(r, g, b);
-        l = clamp01(l + delta);
-        const rgb = hslToRgb(h, s, l);
-        return rgbToHex(rgb.r, rgb.g, rgb.b);
-    } catch (_) {
-        return hex;
-    }
-}
-
-function hexToRgba(hex, alpha = 1) {
-    try {
-        const [r, g, b] = hexToRgb(hex);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    } catch (_) {
-        return `rgba(255, 255, 255, ${alpha})`;
-    }
 }

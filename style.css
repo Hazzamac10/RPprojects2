@@ -42,7 +42,7 @@
     --gradient-glow: radial-gradient(circle, rgba(35, 134, 255, 0.2) 0%, transparent 70%);
     --heading-gradient-start: #1e3a5f;
     --heading-gradient-end: #2386ff;
-    --gradient-angle: 135deg;
+    --heading-gradient-angle: 135deg;
     --navbar-bg: rgba(255, 255, 255, 0.85);
     --nav-link-color: #2386ff;
     --logo-hue: 0deg;
@@ -164,8 +164,8 @@ body::before {
     transform: scale(1.08) translateY(-2px);
     filter: drop-shadow(0 8px 20px rgba(35, 134, 255, 0.3))
         hue-rotate(var(--logo-hue, 0deg))
-        saturate(var(--logo-sat, 1.1))
-        brightness(var(--logo-bright, 1.05));
+        saturate(calc(var(--logo-sat, 1) + 0.1))
+        brightness(calc(var(--logo-bright, 1) + 0.05));
 }
 
 .logo-image:hover::after {
@@ -224,13 +224,18 @@ body::before {
     width: calc(100% - 2rem);
 }
 
+.nav-link:hover::after,
+.nav-link.active::after {
+    display: none;
+}
+
 .nav-link:hover {
-    color: var(--accent-color);
+    color: var(--nav-link-color, var(--accent-color));
     transform: translateY(-2px);
 }
 
 .nav-link.active {
-    color: var(--accent-color);
+    color: var(--nav-link-color, var(--accent-color));
     font-weight: 700;
 }
 
@@ -359,6 +364,7 @@ body::before {
     height: 4px;
     border-radius: 999px;
     background: var(--border-light);
+    cursor: pointer;
 }
 
 .customize-field input[type="range"]::-webkit-slider-thumb {
@@ -571,7 +577,11 @@ body::before {
     text-align: left;
     position: relative;
     z-index: 2;
-    background: linear-gradient(var(--gradient-angle, 135deg), var(--heading-gradient-start, var(--text-primary, #1e3a5f)) 0%, var(--heading-gradient-end, var(--accent-color, #2386ff)) 100%);
+    background: linear-gradient(
+        var(--heading-gradient-angle, 135deg),
+        var(--heading-gradient-start, var(--text-primary, #1e3a5f)) 0%,
+        var(--heading-gradient-end, var(--accent-color, #2386ff)) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -752,7 +762,11 @@ body::before {
     margin-bottom: 0.5rem;
     letter-spacing: -0.03em;
     line-height: 1;
-    background: linear-gradient(var(--gradient-angle, 135deg), var(--heading-gradient-start, var(--text-primary, #1e3a5f)) 0%, var(--heading-gradient-end, var(--accent-color, #2386ff)) 100%);
+    background: linear-gradient(
+        var(--heading-gradient-angle, 135deg),
+        var(--heading-gradient-start, var(--text-primary, #1e3a5f)) 0%,
+        var(--heading-gradient-end, var(--accent-color, #2386ff)) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -764,7 +778,11 @@ body::before {
     content: attr(data-number);
     position: absolute;
     inset: 0;
-    background: linear-gradient(var(--gradient-angle, 135deg), var(--heading-gradient-end, var(--accent-color, #2386ff)) 0%, var(--accent-light, #5ec8ff) 100%);
+    background: linear-gradient(
+        var(--heading-gradient-angle, 135deg),
+        var(--heading-gradient-end, var(--accent-color, #2386ff)) 0%,
+        var(--accent-light, #5ec8ff) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -814,7 +832,11 @@ body::before {
     letter-spacing: -0.03em;
     line-height: 1.2;
     word-wrap: break-word;
-    background: linear-gradient(var(--gradient-angle, 135deg), var(--heading-gradient-start, #1e3a5f) 0%, var(--heading-gradient-end, #2386ff) 100%);
+    background: linear-gradient(
+        var(--heading-gradient-angle, 135deg),
+        var(--heading-gradient-start, #1e3a5f) 0%,
+        var(--heading-gradient-end, #2386ff) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
