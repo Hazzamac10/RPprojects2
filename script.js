@@ -3293,60 +3293,20 @@ function initCustomizePanel() {
 // Drag mode functionality for images
 function initDragMode() {
     const dragBtn = document.getElementById('dragModeBtn');
-    if (!dragBtn) return;
+    if (!dragBtn) {
+        console.warn('Drag mode button not found');
+        return;
+    }
 
     let dragModeActive = false;
     let draggedElement = null;
     let offset = { x: 0, y: 0 };
-    let initialPosition = { left: null, top: null };
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
 
-    dragBtn.addEventListener('click', () => {
-        dragModeActive = !dragModeActive;
-        dragBtn.classList.toggle('active', dragModeActive);
-        
-        // Target portfolio images specifically
-        const images = document.querySelectorAll('.portfolio-img');
-        const items = document.querySelectorAll('.portfolio-item');
-        
-        images.forEach(img => {
-            if (dragModeActive) {
-                img.classList.add('draggable-image');
-                img.style.cursor = 'grab';
-                img.style.userSelect = 'none';
-                img.style.pointerEvents = 'auto';
-                // Store initial position
-                const rect = img.getBoundingClientRect();
-                img.dataset.initialLeft = rect.left + window.scrollX + 'px';
-                img.dataset.initialTop = rect.top + window.scrollY + 'px';
-            } else {
-                img.classList.remove('draggable-image');
-                img.style.cursor = '';
-                img.style.userSelect = '';
-                img.style.pointerEvents = '';
-                // Reset position if needed
-                if (img.dataset.initialLeft && img.dataset.initialTop) {
-                    img.style.position = '';
-                    img.style.left = '';
-                    img.style.top = '';
-                    img.style.zIndex = '';
-                    img.style.width = '';
-                    img.style.height = '';
-                }
-            }
-        });
-        
-        // Also mark parent figure elements
-        items.forEach(item => {
-            if (dragModeActive) {
-                item.style.cursor = 'grab';
-            } else {
-                item.style.cursor = '';
-            }
-        });
-    });
-
-    // Mouse drag functionality
-    document.addEventListener('mousedown', (e) => {
+    // Use capture phase to intercept events before lightbox handlers
+    const handleMouseDown = (e) => {
         if (!dragModeActive) return;
         
         // Check if clicked on image or inside figure containing image
@@ -3369,14 +3329,18 @@ function initDragMode() {
         
         if (!img) return;
 
+        // Prevent lightbox from opening
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
+        isDragging = false;
         draggedElement = img;
         const rect = img.getBoundingClientRect();
         offset.x = e.clientX - rect.left;
         offset.y = e.clientY - rect.top;
+        startX = e.clientX;
+        startY = e.clientY;
         
         // Store initial position if not already stored
         if (!img.dataset.initialLeft) {
@@ -3393,43 +3357,57 @@ function initDragMode() {
         img.style.height = rect.height + 'px';
         
         document.body.style.userSelect = 'none';
-    });
+    };
 
-    document.addEventListener('mousemove', (e) => {
+    const handleMouseMove = (e) => {
         if (!dragModeActive || !draggedElement) return;
         
-        e.preventDefault();
-        draggedElement.style.left = (e.clientX - offset.x) + 'px';
-        draggedElement.style.top = (e.clientY - offset.y) + 'px';
-    });
+        const deltaX = Math.abs(e.clientX - startX);
+        const deltaY = Math.abs(e.clientY - startY);
+        
+        // Start dragging if moved more than 5 pixels
+        if (!isDragging && (deltaX > 5 || deltaY > 5)) {
+            isDragging = true;
+        }
+        
+        if (isDragging) {
+            e.preventDefault();
+            draggedElement.style.left = (e.clientX - offset.x) + 'px';
+            draggedElement.style.top = (e.clientY - offset.y) + 'px';
+        }
+    };
 
-    document.addEventListener('mouseup', (e) => {
+    const handleMouseUp = (e) => {
         if (draggedElement) {
+            // If we were dragging, prevent lightbox
+            if (isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
             draggedElement.classList.remove('dragging');
             draggedElement.style.pointerEvents = '';
             draggedElement.style.cursor = 'grab';
             draggedElement = null;
+            isDragging = false;
             document.body.style.userSelect = '';
         }
-    });
+    };
 
     // Touch support for mobile
-    document.addEventListener('touchstart', (e) => {
+    const handleTouchStart = (e) => {
         if (!dragModeActive) return;
         
         let img = null;
         const clickedElement = e.target;
         
-        // First check if clicked directly on an image
         if (clickedElement.tagName === 'IMG' && clickedElement.classList.contains('draggable-image')) {
             img = clickedElement;
         } else {
-            // Check if clicked inside a portfolio item
             const figure = clickedElement.closest('figure.portfolio-item');
             if (figure) {
                 img = figure.querySelector('.portfolio-img.draggable-image');
             } else {
-                // Check if clicked on a portfolio image
                 img = clickedElement.closest('.portfolio-img.draggable-image');
             }
         }
@@ -3440,11 +3418,14 @@ function initDragMode() {
         e.stopPropagation();
         e.stopImmediatePropagation();
         
+        isDragging = false;
         draggedElement = img;
         const touch = e.touches[0];
         const rect = img.getBoundingClientRect();
         offset.x = touch.clientX - rect.left;
         offset.y = touch.clientY - rect.top;
+        startX = touch.clientX;
+        startY = touch.clientY;
         
         if (!img.dataset.initialLeft) {
             img.dataset.initialLeft = rect.left + window.scrollX + 'px';
@@ -3457,21 +3438,108 @@ function initDragMode() {
         img.style.pointerEvents = 'none';
         img.style.width = rect.width + 'px';
         img.style.height = rect.height + 'px';
-    });
+    };
 
-    document.addEventListener('touchmove', (e) => {
+    const handleTouchMove = (e) => {
         if (!dragModeActive || !draggedElement) return;
-        e.preventDefault();
         const touch = e.touches[0];
-        draggedElement.style.left = (touch.clientX - offset.x) + 'px';
-        draggedElement.style.top = (touch.clientY - offset.y) + 'px';
-    });
+        const deltaX = Math.abs(touch.clientX - startX);
+        const deltaY = Math.abs(touch.clientY - startY);
+        
+        if (!isDragging && (deltaX > 5 || deltaY > 5)) {
+            isDragging = true;
+        }
+        
+        if (isDragging) {
+            e.preventDefault();
+            draggedElement.style.left = (touch.clientX - offset.x) + 'px';
+            draggedElement.style.top = (touch.clientY - offset.y) + 'px';
+        }
+    };
 
-    document.addEventListener('touchend', () => {
+    const handleTouchEnd = () => {
         if (draggedElement) {
             draggedElement.classList.remove('dragging');
             draggedElement.style.pointerEvents = '';
             draggedElement = null;
+            isDragging = false;
+        }
+    };
+
+    // Store handlers for cleanup
+    let touchHandlersAdded = false;
+    
+    dragBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragModeActive = !dragModeActive;
+        dragBtn.classList.toggle('active', dragModeActive);
+        
+        // Target portfolio images specifically
+        const images = document.querySelectorAll('.portfolio-img');
+        const items = document.querySelectorAll('.portfolio-item');
+        
+        if (dragModeActive) {
+            // Add event listeners with capture phase to intercept before lightbox
+            document.addEventListener('mousedown', handleMouseDown, true);
+            document.addEventListener('mousemove', handleMouseMove, true);
+            document.addEventListener('mouseup', handleMouseUp, true);
+            
+            // Add touch handlers
+            if (!touchHandlersAdded) {
+                document.addEventListener('touchstart', handleTouchStart, { passive: false, capture: true });
+                document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: true });
+                document.addEventListener('touchend', handleTouchEnd, { capture: true });
+                touchHandlersAdded = true;
+            }
+            
+            images.forEach(img => {
+                img.classList.add('draggable-image');
+                img.style.cursor = 'grab';
+                img.style.userSelect = 'none';
+                img.style.pointerEvents = 'auto';
+                // Disable lightbox by adding data attribute
+                img.dataset.dragMode = 'true';
+            });
+            
+            items.forEach(item => {
+                item.style.cursor = 'grab';
+            });
+        } else {
+            // Remove event listeners
+            document.removeEventListener('mousedown', handleMouseDown, true);
+            document.removeEventListener('mousemove', handleMouseMove, true);
+            document.removeEventListener('mouseup', handleMouseUp, true);
+            
+            // Remove touch handlers
+            if (touchHandlersAdded) {
+                document.removeEventListener('touchstart', handleTouchStart, { capture: true });
+                document.removeEventListener('touchmove', handleTouchMove, { capture: true });
+                document.removeEventListener('touchend', handleTouchEnd, { capture: true });
+                touchHandlersAdded = false;
+            }
+            
+            images.forEach(img => {
+                img.classList.remove('draggable-image');
+                img.style.cursor = '';
+                img.style.userSelect = '';
+                img.style.pointerEvents = '';
+                delete img.dataset.dragMode;
+                
+                // Reset position if needed
+                if (img.dataset.initialLeft && img.dataset.initialTop) {
+                    img.style.position = '';
+                    img.style.left = '';
+                    img.style.top = '';
+                    img.style.zIndex = '';
+                    img.style.width = '';
+                    img.style.height = '';
+                }
+            });
+            
+            items.forEach(item => {
+                item.style.cursor = '';
+            });
         }
     });
 }
@@ -3701,7 +3769,13 @@ function initPortfolioLightbox() {
 
     images.forEach((img) => {
         img.style.cursor = 'zoom-in';
-        img.addEventListener('click', () => {
+        img.addEventListener('click', (e) => {
+            // Don't open lightbox if drag mode is active
+            if (img.dataset.dragMode === 'true' || img.classList.contains('draggable-image')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
             imgEl.src = img.currentSrc || img.src;
             overlay.classList.add('open');
         });
