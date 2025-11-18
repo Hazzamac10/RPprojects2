@@ -3090,8 +3090,8 @@ function initAnimatedCounters() {
         const num = parseInt(text.replace(/[^0-9]/g, ''));
         if (!num) return;
         
-        const duration = 2000; // 2 seconds
-        const steps = 60;
+        const duration = 800; // 0.8 seconds - much faster
+        const steps = 30;
         const increment = num / steps;
         let current = 0;
         let step = 0;
