@@ -335,7 +335,7 @@ body::before {
 .portfolio-item.draggable.dragging {
     cursor: grabbing !important;
     z-index: 10000;
-    transform: scale(1.02);
+    transform: none !important; /* Remove any transforms that might cause positioning issues */
     box-shadow: 0 12px 40px rgba(35, 134, 255, 0.3);
     opacity: 0.95;
 }
