@@ -856,11 +856,13 @@ body {
     cursor: not-allowed;
 }
 
-/* Footer */
+/* Footer - Premium Architectural Style */
 .footer {
     background: var(--text-primary);
-    color: white;
-    padding: 3rem 0 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 5rem 0 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 0;
 }
 
 .footer-content {
