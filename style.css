@@ -1327,9 +1327,7 @@ body.page-loaded {
 }
 
 /* Theme Styles */
-body[data-theme="modern"] {
-    /* Current modern theme - default, uses root variables */
-}
+/* Modern theme uses default root variables */
 
 body[data-theme="dark"] {
     --primary-color: #0a0a0a;
