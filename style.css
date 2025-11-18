@@ -156,7 +156,7 @@ body {
 
 .nav-link {
     text-decoration: none;
-    color: var(--accent-color);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 0.95rem;
     letter-spacing: 0.08em;
@@ -204,12 +204,12 @@ body {
 }
 
 .nav-link:hover {
-    color: var(--accent-hover);
+    color: var(--text-primary);
     transform: translateY(-2px);
 }
 
 .nav-link.active {
-    color: var(--accent-hover);
+    color: var(--text-primary);
     font-weight: 700;
 }
 
