@@ -3288,20 +3288,49 @@ function initDragMode() {
     let dragModeActive = false;
     let draggedElement = null;
     let offset = { x: 0, y: 0 };
+    let initialPosition = { left: null, top: null };
 
     dragBtn.addEventListener('click', () => {
         dragModeActive = !dragModeActive;
         dragBtn.classList.toggle('active', dragModeActive);
         
-        const images = document.querySelectorAll('img.portfolio-img, img');
+        // Target portfolio images specifically
+        const images = document.querySelectorAll('.portfolio-img');
+        const items = document.querySelectorAll('.portfolio-item');
+        
         images.forEach(img => {
             if (dragModeActive) {
                 img.classList.add('draggable-image');
-                img.draggable = true;
-                img.style.position = 'relative';
+                img.style.cursor = 'grab';
+                img.style.userSelect = 'none';
+                img.style.pointerEvents = 'auto';
+                // Store initial position
+                const rect = img.getBoundingClientRect();
+                img.dataset.initialLeft = rect.left + window.scrollX + 'px';
+                img.dataset.initialTop = rect.top + window.scrollY + 'px';
             } else {
                 img.classList.remove('draggable-image');
-                img.draggable = false;
+                img.style.cursor = '';
+                img.style.userSelect = '';
+                img.style.pointerEvents = '';
+                // Reset position if needed
+                if (img.dataset.initialLeft && img.dataset.initialTop) {
+                    img.style.position = '';
+                    img.style.left = '';
+                    img.style.top = '';
+                    img.style.zIndex = '';
+                    img.style.width = '';
+                    img.style.height = '';
+                }
+            }
+        });
+        
+        // Also mark parent figure elements
+        items.forEach(item => {
+            if (dragModeActive) {
+                item.style.cursor = 'grab';
+            } else {
+                item.style.cursor = '';
             }
         });
     });
@@ -3309,19 +3338,49 @@ function initDragMode() {
     // Mouse drag functionality
     document.addEventListener('mousedown', (e) => {
         if (!dragModeActive) return;
-        const img = e.target.closest('.draggable-image');
+        
+        // Check if clicked on image or inside figure containing image
+        let img = null;
+        const clickedElement = e.target;
+        
+        // First check if clicked directly on an image
+        if (clickedElement.tagName === 'IMG' && clickedElement.classList.contains('draggable-image')) {
+            img = clickedElement;
+        } else {
+            // Check if clicked inside a portfolio item
+            const figure = clickedElement.closest('figure.portfolio-item');
+            if (figure) {
+                img = figure.querySelector('.portfolio-img.draggable-image');
+            } else {
+                // Check if clicked on a portfolio image
+                img = clickedElement.closest('.portfolio-img.draggable-image');
+            }
+        }
+        
         if (!img) return;
 
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
         draggedElement = img;
         const rect = img.getBoundingClientRect();
         offset.x = e.clientX - rect.left;
         offset.y = e.clientY - rect.top;
+        
+        // Store initial position if not already stored
+        if (!img.dataset.initialLeft) {
+            img.dataset.initialLeft = rect.left + window.scrollX + 'px';
+            img.dataset.initialTop = rect.top + window.scrollY + 'px';
+        }
 
+        img.classList.add('dragging');
         img.style.position = 'fixed';
         img.style.zIndex = '10000';
         img.style.pointerEvents = 'none';
         img.style.cursor = 'grabbing';
+        img.style.width = rect.width + 'px';
+        img.style.height = rect.height + 'px';
         
         document.body.style.userSelect = 'none';
     });
@@ -3329,14 +3388,16 @@ function initDragMode() {
     document.addEventListener('mousemove', (e) => {
         if (!dragModeActive || !draggedElement) return;
         
+        e.preventDefault();
         draggedElement.style.left = (e.clientX - offset.x) + 'px';
         draggedElement.style.top = (e.clientY - offset.y) + 'px';
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('mouseup', (e) => {
         if (draggedElement) {
+            draggedElement.classList.remove('dragging');
             draggedElement.style.pointerEvents = '';
-            draggedElement.style.cursor = '';
+            draggedElement.style.cursor = 'grab';
             draggedElement = null;
             document.body.style.userSelect = '';
         }
@@ -3345,19 +3406,47 @@ function initDragMode() {
     // Touch support for mobile
     document.addEventListener('touchstart', (e) => {
         if (!dragModeActive) return;
-        const img = e.target.closest('.draggable-image');
+        
+        let img = null;
+        const clickedElement = e.target;
+        
+        // First check if clicked directly on an image
+        if (clickedElement.tagName === 'IMG' && clickedElement.classList.contains('draggable-image')) {
+            img = clickedElement;
+        } else {
+            // Check if clicked inside a portfolio item
+            const figure = clickedElement.closest('figure.portfolio-item');
+            if (figure) {
+                img = figure.querySelector('.portfolio-img.draggable-image');
+            } else {
+                // Check if clicked on a portfolio image
+                img = clickedElement.closest('.portfolio-img.draggable-image');
+            }
+        }
+        
         if (!img) return;
 
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
         draggedElement = img;
         const touch = e.touches[0];
         const rect = img.getBoundingClientRect();
         offset.x = touch.clientX - rect.left;
         offset.y = touch.clientY - rect.top;
+        
+        if (!img.dataset.initialLeft) {
+            img.dataset.initialLeft = rect.left + window.scrollX + 'px';
+            img.dataset.initialTop = rect.top + window.scrollY + 'px';
+        }
 
+        img.classList.add('dragging');
         img.style.position = 'fixed';
         img.style.zIndex = '10000';
         img.style.pointerEvents = 'none';
+        img.style.width = rect.width + 'px';
+        img.style.height = rect.height + 'px';
     });
 
     document.addEventListener('touchmove', (e) => {
@@ -3370,6 +3459,7 @@ function initDragMode() {
 
     document.addEventListener('touchend', () => {
         if (draggedElement) {
+            draggedElement.classList.remove('dragging');
             draggedElement.style.pointerEvents = '';
             draggedElement = null;
         }
