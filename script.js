@@ -3304,8 +3304,6 @@ function initDragMode() {
     let isDragging = false;
     let startX = 0;
     let startY = 0;
-    let alignmentGuides = null;
-    const SNAP_THRESHOLD = 10; // pixels
 
     // Use capture phase to intercept events before lightbox handlers
     const handleMouseDown = (e) => {
@@ -3348,17 +3346,6 @@ function initDragMode() {
         portfolioItem.style.left = e.clientX - offset.x + 'px';
         portfolioItem.style.top = e.clientY - offset.y + 'px';
         
-        // Create alignment guides container
-        if (!alignmentGuides) {
-            alignmentGuides = document.createElement('div');
-            alignmentGuides.id = 'alignmentGuides';
-            alignmentGuides.innerHTML = `
-                <div class="guide-line guide-vertical"></div>
-                <div class="guide-line guide-horizontal"></div>
-            `;
-            document.body.appendChild(alignmentGuides);
-        }
-        
         document.body.style.userSelect = 'none';
     };
 
@@ -3375,119 +3362,13 @@ function initDragMode() {
         
         if (isDragging) {
             e.preventDefault();
-            
-            // Calculate new position
-            let newLeft = e.clientX - offset.x;
-            let newTop = e.clientY - offset.y;
-            
-            // Get all other portfolio items for alignment
-            const allItems = Array.from(document.querySelectorAll('figure.portfolio-item.draggable'));
-            const otherItems = allItems.filter(item => item !== draggedElement);
-            
-            let snapX = null;
-            let snapY = null;
-            const draggedRect = {
-                left: newLeft,
-                top: newTop,
-                right: newLeft + draggedElement.offsetWidth,
-                bottom: newTop + draggedElement.offsetHeight,
-                width: draggedElement.offsetWidth,
-                height: draggedElement.offsetHeight
-            };
-            
-            // Check for alignment with other items
-            otherItems.forEach(item => {
-                const itemRect = item.getBoundingClientRect();
-                
-                // Check vertical alignment (left/right edges) - prioritize closest match
-                const leftLeft = Math.abs(draggedRect.left - itemRect.left);
-                const rightRight = Math.abs(draggedRect.right - itemRect.right);
-                const leftRight = Math.abs(draggedRect.left - itemRect.right);
-                const rightLeft = Math.abs(draggedRect.right - itemRect.left);
-                
-                if (leftLeft < SNAP_THRESHOLD && (snapX === null || leftLeft < Math.abs(snapX - draggedRect.left))) {
-                    snapX = itemRect.left;
-                } else if (rightRight < SNAP_THRESHOLD && (snapX === null || rightRight < Math.abs(snapX - draggedRect.left))) {
-                    snapX = itemRect.right - draggedRect.width;
-                } else if (leftRight < SNAP_THRESHOLD && (snapX === null || leftRight < Math.abs(snapX - draggedRect.left))) {
-                    snapX = itemRect.right;
-                } else if (rightLeft < SNAP_THRESHOLD && (snapX === null || rightLeft < Math.abs(snapX - draggedRect.left))) {
-                    snapX = itemRect.left - draggedRect.width;
-                }
-                
-                // Check horizontal alignment (top/bottom edges) - prioritize closest match
-                const topTop = Math.abs(draggedRect.top - itemRect.top);
-                const bottomBottom = Math.abs(draggedRect.bottom - itemRect.bottom);
-                const topBottom = Math.abs(draggedRect.top - itemRect.bottom);
-                const bottomTop = Math.abs(draggedRect.bottom - itemRect.top);
-                
-                if (topTop < SNAP_THRESHOLD && (snapY === null || topTop < Math.abs(snapY - draggedRect.top))) {
-                    snapY = itemRect.top;
-                } else if (bottomBottom < SNAP_THRESHOLD && (snapY === null || bottomBottom < Math.abs(snapY - draggedRect.top))) {
-                    snapY = itemRect.bottom - draggedRect.height;
-                } else if (topBottom < SNAP_THRESHOLD && (snapY === null || topBottom < Math.abs(snapY - draggedRect.top))) {
-                    snapY = itemRect.bottom;
-                } else if (bottomTop < SNAP_THRESHOLD && (snapY === null || bottomTop < Math.abs(snapY - draggedRect.top))) {
-                    snapY = itemRect.top - draggedRect.height;
-                }
-            });
-            
-            // Apply snapping
-            if (snapX !== null) {
-                newLeft = snapX;
-                // Show guide at the aligned edge
-                showAlignmentGuide('vertical', snapX);
-            } else {
-                hideAlignmentGuide('vertical');
-            }
-            
-            if (snapY !== null) {
-                newTop = snapY;
-                // Show guide at the aligned edge
-                showAlignmentGuide('horizontal', snapY);
-            } else {
-                hideAlignmentGuide('horizontal');
-            }
-            
-            draggedElement.style.left = newLeft + 'px';
-            draggedElement.style.top = newTop + 'px';
+            draggedElement.style.left = (e.clientX - offset.x) + 'px';
+            draggedElement.style.top = (e.clientY - offset.y) + 'px';
         }
     };
     
-    const showAlignmentGuide = (direction, position) => {
-        if (!alignmentGuides) return;
-        const guide = alignmentGuides.querySelector(`.guide-${direction}`);
-        if (guide) {
-            if (direction === 'vertical') {
-                guide.style.left = position + 'px';
-                guide.style.top = '0';
-                guide.style.width = '2px';
-                guide.style.height = '100vh';
-                guide.style.display = 'block';
-            } else {
-                guide.style.top = position + 'px';
-                guide.style.left = '0';
-                guide.style.width = '100vw';
-                guide.style.height = '2px';
-                guide.style.display = 'block';
-            }
-        }
-    };
-    
-    const hideAlignmentGuide = (direction) => {
-        if (!alignmentGuides) return;
-        const guide = alignmentGuides.querySelector(`.guide-${direction}`);
-        if (guide) {
-            guide.style.display = 'none';
-        }
-    };
-
     const handleMouseUp = (e) => {
         if (draggedElement) {
-            // Hide alignment guides
-            hideAlignmentGuide('vertical');
-            hideAlignmentGuide('horizontal');
-            
             // If we were dragging, prevent lightbox
             if (isDragging) {
                 e.preventDefault();
@@ -3540,21 +3421,8 @@ function initDragMode() {
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
         portfolioItem.style.width = rect.width + 'px';
-        
-        const touch = e.touches[0];
         portfolioItem.style.left = (touch.clientX - offset.x) + 'px';
         portfolioItem.style.top = (touch.clientY - offset.y) + 'px';
-        
-        // Create alignment guides container if needed
-        if (!alignmentGuides) {
-            alignmentGuides = document.createElement('div');
-            alignmentGuides.id = 'alignmentGuides';
-            alignmentGuides.innerHTML = `
-                <div class="guide-line guide-vertical"></div>
-                <div class="guide-line guide-horizontal"></div>
-            `;
-            document.body.appendChild(alignmentGuides);
-        }
     };
 
     const handleTouchMove = (e) => {
@@ -3569,74 +3437,13 @@ function initDragMode() {
         
         if (isDragging) {
             e.preventDefault();
-            
-            let newLeft = touch.clientX - offset.x;
-            let newTop = touch.clientY - offset.y;
-            
-            // Get all other portfolio items for alignment
-            const allItems = Array.from(document.querySelectorAll('figure.portfolio-item.draggable'));
-            const otherItems = allItems.filter(item => item !== draggedElement);
-            
-            let snapX = null;
-            let snapY = null;
-            const draggedRect = {
-                left: newLeft,
-                top: newTop,
-                right: newLeft + draggedElement.offsetWidth,
-                bottom: newTop + draggedElement.offsetHeight,
-                width: draggedElement.offsetWidth,
-                height: draggedElement.offsetHeight
-            };
-            
-            // Check for alignment with other items
-            otherItems.forEach(item => {
-                const itemRect = item.getBoundingClientRect();
-                
-                if (Math.abs(draggedRect.left - itemRect.left) < SNAP_THRESHOLD) {
-                    snapX = itemRect.left;
-                } else if (Math.abs(draggedRect.right - itemRect.right) < SNAP_THRESHOLD) {
-                    snapX = itemRect.right - draggedRect.width;
-                } else if (Math.abs(draggedRect.left - itemRect.right) < SNAP_THRESHOLD) {
-                    snapX = itemRect.right;
-                } else if (Math.abs(draggedRect.right - itemRect.left) < SNAP_THRESHOLD) {
-                    snapX = itemRect.left - draggedRect.width;
-                }
-                
-                if (Math.abs(draggedRect.top - itemRect.top) < SNAP_THRESHOLD) {
-                    snapY = itemRect.top;
-                } else if (Math.abs(draggedRect.bottom - itemRect.bottom) < SNAP_THRESHOLD) {
-                    snapY = itemRect.bottom - draggedRect.height;
-                } else if (Math.abs(draggedRect.top - itemRect.bottom) < SNAP_THRESHOLD) {
-                    snapY = itemRect.bottom;
-                } else if (Math.abs(draggedRect.bottom - itemRect.top) < SNAP_THRESHOLD) {
-                    snapY = itemRect.top - draggedRect.height;
-                }
-            });
-            
-            if (snapX !== null) {
-                newLeft = snapX;
-                showAlignmentGuide('vertical', snapX + draggedRect.width / 2);
-            } else {
-                hideAlignmentGuide('vertical');
-            }
-            
-            if (snapY !== null) {
-                newTop = snapY;
-                showAlignmentGuide('horizontal', snapY + draggedRect.height / 2);
-            } else {
-                hideAlignmentGuide('horizontal');
-            }
-            
-            draggedElement.style.left = newLeft + 'px';
-            draggedElement.style.top = newTop + 'px';
+            draggedElement.style.left = (touch.clientX - offset.x) + 'px';
+            draggedElement.style.top = (touch.clientY - offset.y) + 'px';
         }
     };
 
     const handleTouchEnd = () => {
         if (draggedElement) {
-            hideAlignmentGuide('vertical');
-            hideAlignmentGuide('horizontal');
-            
             if (!isDragging && draggedElement.dataset.initialLeft && draggedElement.dataset.initialTop) {
                 draggedElement.style.left = draggedElement.dataset.initialLeft;
                 draggedElement.style.top = draggedElement.dataset.initialTop;
