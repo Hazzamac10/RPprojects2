@@ -71,6 +71,16 @@ body {
     text-rendering: optimizeLegibility;
     letter-spacing: -0.01em;
     position: relative;
+    opacity: 1;
+}
+
+body:not(.page-loaded) {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+body.page-loaded {
+    opacity: 1;
 }
 
 body::before {
@@ -1695,14 +1705,6 @@ body.loading {
     50% { transform: translateY(-6px); }
 }
 
-body {
-    opacity: 0;
-    transition: opacity 0.6s ease;
-}
-
-body.page-loaded {
-    opacity: 1;
-}
 
 /* Theme Styles */
 /* Modern theme uses default root variables */
