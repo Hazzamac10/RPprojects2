@@ -200,14 +200,7 @@ body::before {
 }
 
 .nav-link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(35, 134, 255, 0.05), rgba(24, 106, 198, 0.02));
-    border-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
+    display: none;
 }
 
 .nav-link:hover::before,
@@ -217,7 +210,7 @@ body::before {
 
 .nav-link:hover::after,
 .nav-link.active::after {
-    opacity: 1;
+    display: none;
 }
 
 .nav-link:hover {
