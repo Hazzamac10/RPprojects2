@@ -3097,9 +3097,19 @@ function initCustomizePanel() {
         }
 
         if (customVars.navBg) {
-            setVar('--navbar-bg', customVars.navBg);
+            // Convert hex color to rgba with transparency for glassmorphism effect
+            const rgb = hexToRgb(customVars.navBg);
+            if (rgb && Array.isArray(rgb)) {
+                // Use 0.85 opacity for normal state, 0.98 for scrolled state
+                setVar('--navbar-bg', `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.85)`);
+                setVar('--navbar-bg-scrolled', `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.98)`);
+            } else {
+                // Fallback: just use the hex color directly
+                setVar('--navbar-bg', customVars.navBg);
+            }
         } else {
             root.style.removeProperty('--navbar-bg');
+            root.style.removeProperty('--navbar-bg-scrolled');
         }
 
         if (customVars.navText) {
@@ -3141,16 +3151,16 @@ function initCustomizePanel() {
         
         if (customVars.glowColor && glowIntensity !== null) {
             const rgb = hexToRgb(customVars.glowColor);
-            if (rgb) {
+            if (rgb && Array.isArray(rgb)) {
                 const intensity = glowIntensity / 100;
                 const blur = glowBlur !== null ? glowBlur : 10;
-                setVar('--heading-glow-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                setVar('--heading-glow-rgb', `${rgb[0]}, ${rgb[1]}, ${rgb[2]}`);
                 setVar('--heading-glow-color', customVars.glowColor);
                 setVar('--heading-glow-intensity', intensity.toString());
                 setVar('--heading-glow-blur', `${blur}px`);
                 // Create rgba strings for filter and text-shadow
-                setVar('--heading-glow-filter', `drop-shadow(0 2px ${blur}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity}))`);
-                setVar('--heading-glow-shadow', `0 0 ${blur * 3}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity * 0.5})`);
+                setVar('--heading-glow-filter', `drop-shadow(0 2px ${blur}px rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${intensity}))`);
+                setVar('--heading-glow-shadow', `0 0 ${blur * 3}px rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${intensity * 0.5})`);
             }
         } else {
             root.style.removeProperty('--heading-glow-rgb');
@@ -3216,7 +3226,7 @@ function initCustomizePanel() {
         resetBtn.addEventListener('click', () => {
             customVars = {};
             localStorage.removeItem(STORAGE_KEY);
-            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--logo-overlay-color','--logo-overlay-opacity','--heading-glow-color','--heading-glow-rgb','--heading-glow-intensity','--heading-glow-blur','--heading-glow-filter','--heading-glow-shadow'].forEach(v => root.style.removeProperty(v));
+            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--navbar-bg-scrolled','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--logo-overlay-color','--logo-overlay-opacity','--heading-glow-color','--heading-glow-rgb','--heading-glow-intensity','--heading-glow-blur','--heading-glow-filter','--heading-glow-shadow'].forEach(v => root.style.removeProperty(v));
             syncInputs();
             applyCustomVars();
             persistCustomVars();
