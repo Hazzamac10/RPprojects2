@@ -2974,12 +2974,8 @@ function initNewThemeSwitcher() {
     const body = document.body;
     
     if (themeButtons.length === 0) {
-        console.warn('Theme buttons not found, retrying...');
-        setTimeout(initNewThemeSwitcher, 200);
         return;
     }
-    
-    console.log('Found theme buttons:', themeButtons.length);
     
     // Load saved theme or default to modern
     const savedTheme = localStorage.getItem('websiteTheme') || 'modern';
@@ -3025,14 +3021,33 @@ function initCustomizePanel() {
     if (!wrapper || !toggle || !panel) return;
 
     const STORAGE_KEY = 'custom-theme-vars';
+    const PRESET_KEY = 'custom-theme-style-presets';
     const root = document.documentElement;
     let customVars = {};
+    let savedPresets = [];
+    const savedList = panel.querySelector('#savedStyleList');
+    const saveBtn = panel.querySelector('[data-action="save-style"]');
 
     try {
         customVars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
     } catch (_) {
         customVars = {};
     }
+
+    try {
+        const stored = JSON.parse(localStorage.getItem(PRESET_KEY) || '[]');
+        savedPresets = Array.isArray(stored) ? stored : [];
+    } catch (_) {
+        savedPresets = [];
+    }
+
+    const persistCustomVars = () => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customVars));
+    };
+
+    const persistPresets = () => {
+        localStorage.setItem(PRESET_KEY, JSON.stringify(savedPresets));
+    };
 
     const toNumber = (val) => {
         const num = parseFloat(val);
@@ -3047,6 +3062,8 @@ function initCustomizePanel() {
                 root.style.removeProperty(name);
             }
         };
+
+        const headingAngle = toNumber(customVars.gradientAngle) ?? 135;
 
         if (customVars.primary) {
             const angle = toNumber(customVars.gradientAngle) ?? 135;
@@ -3091,15 +3108,7 @@ function initCustomizePanel() {
             root.style.removeProperty('--nav-link-color');
         }
 
-        const gradientAngleVal = toNumber(customVars.gradientAngle);
-        if (gradientAngleVal !== null) {
-            setVar('--heading-gradient-angle', `${gradientAngleVal}deg`);
-            if (customVars.primary) {
-                setVar('--gradient-primary', `linear-gradient(${gradientAngleVal}deg, ${customVars.primary}1a, ${customVars.primary})`);
-            }
-        } else {
-            root.style.removeProperty('--heading-gradient-angle');
-        }
+        setVar('--heading-gradient-angle', `${headingAngle}deg`);
 
         const logoHue = toNumber(customVars.logoHue);
         if (logoHue !== null) setVar('--logo-hue', `${logoHue}deg`);
@@ -3112,6 +3121,19 @@ function initCustomizePanel() {
         const logoBright = toNumber(customVars.logoBright);
         if (logoBright !== null) setVar('--logo-bright', (logoBright / 100).toString());
         else root.style.removeProperty('--logo-bright');
+
+        if (customVars.logoColor) {
+            setVar('--logo-overlay-color', customVars.logoColor);
+        } else {
+            root.style.removeProperty('--logo-overlay-color');
+        }
+
+        const logoOverlay = toNumber(customVars.logoColorOpacity);
+        if (logoOverlay !== null) {
+            setVar('--logo-overlay-opacity', (logoOverlay / 100).toString());
+        } else {
+            root.style.removeProperty('--logo-overlay-opacity');
+        }
     };
 
     const syncInputs = () => {
@@ -3142,7 +3164,9 @@ function initCustomizePanel() {
         }
     });
 
-    panel.querySelectorAll('[data-var]').forEach(input => {
+    const inputs = panel.querySelectorAll('[data-var]');
+
+    inputs.forEach(input => {
         const key = input.dataset.var;
         input.addEventListener('input', () => {
             let value = input.value;
@@ -3155,7 +3179,7 @@ function initCustomizePanel() {
                 customVars[key] = value;
             }
             applyCustomVars();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(customVars));
+            persistCustomVars();
             localStorage.removeItem('site-theme');
             localStorage.removeItem('site-theme-custom');
         });
@@ -3166,11 +3190,68 @@ function initCustomizePanel() {
         resetBtn.addEventListener('click', () => {
             customVars = {};
             localStorage.removeItem(STORAGE_KEY);
-            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright'].forEach(v => root.style.removeProperty(v));
+            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--logo-overlay-color','--logo-overlay-opacity'].forEach(v => root.style.removeProperty(v));
             syncInputs();
             applyCustomVars();
+            persistCustomVars();
+            localStorage.removeItem('site-theme');
+            localStorage.removeItem('site-theme-custom');
         });
     }
+
+    const renderSavedStyles = () => {
+        if (!savedList) return;
+        savedList.innerHTML = '';
+        if (!savedPresets.length) {
+            const empty = document.createElement('p');
+            empty.className = 'saved-style-empty';
+            empty.textContent = 'No styles saved yet';
+            savedList.appendChild(empty);
+            return;
+        }
+        savedPresets.forEach((preset, index) => {
+            const pill = document.createElement('div');
+            pill.className = 'saved-style-pill';
+            const applyBtn = document.createElement('button');
+            applyBtn.type = 'button';
+            applyBtn.textContent = preset.name || `Style ${index + 1}`;
+            applyBtn.addEventListener('click', () => {
+                customVars = { ...preset.vars };
+                applyCustomVars();
+                syncInputs();
+                persistCustomVars();
+                localStorage.removeItem('site-theme');
+                localStorage.removeItem('site-theme-custom');
+            });
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'saved-style-delete';
+            deleteBtn.textContent = '×';
+            deleteBtn.addEventListener('click', () => {
+                savedPresets = savedPresets.filter(s => s.id !== preset.id);
+                persistPresets();
+                renderSavedStyles();
+            });
+            pill.appendChild(applyBtn);
+            pill.appendChild(deleteBtn);
+            savedList.appendChild(pill);
+        });
+    };
+
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            const snapshot = {};
+            inputs.forEach(input => {
+                snapshot[input.dataset.var] = input.value;
+            });
+            const name = `Style ${savedPresets.length + 1}`;
+            savedPresets.push({ id: Date.now(), name, vars: snapshot });
+            persistPresets();
+            renderSavedStyles();
+        });
+    }
+
+    renderSavedStyles();
 }
 
 // Initialize the application when the page loads

@@ -27,6 +27,7 @@
             <div class="nav-logo reveal slide-down delay-1">
                 <div class="logo-container">
                     <img src="CXBD5052.JPG" alt="RP PROJECTS Logo" class="logo-image" data-remove-bg="white" data-brand-primary="#5ec8ff" data-brand-secondary="#2aa7ff" data-brand-accent="#1f8ce6">
+                    <span class="logo-color-layer" aria-hidden="true"></span>
                 </div>
             </div>
             <ul class="nav-menu">
@@ -36,9 +37,6 @@
                 <li class="reveal slide-down delay-5"><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <div class="theme-switcher">
-                    <button type="button" class="theme-btn active" data-theme="modern" title="Modern Style">M</button>
-                </div>
                 <div class="customize-wrapper">
                     <button type="button" class="customize-toggle" aria-expanded="false">
                         <span>Customize</span>
@@ -100,6 +98,21 @@
                                 <span>Brightness</span>
                                 <input type="range" min="50" max="150" value="100" data-var="logoBright" data-default="100">
                             </label>
+                            <label class="customize-field">
+                                <span>Overlay</span>
+                                <input type="color" id="logoColorPicker" data-var="logoColor" data-default="#2386ff" value="#2386ff">
+                            </label>
+                            <label class="customize-field customize-slider">
+                                <span>Overlay Strength</span>
+                                <input type="range" min="0" max="100" value="0" data-var="logoColorOpacity" data-default="0">
+                            </label>
+                        </div>
+                        <div class="customize-group saved-style-group">
+                            <p class="customize-subtitle">Saved Styles</p>
+                            <div class="saved-style-list" id="savedStyleList">
+                                <p class="saved-style-empty">No styles saved yet</p>
+                            </div>
+                            <button type="button" class="customize-save" data-action="save-style">Save Current Style</button>
                         </div>
                         <div class="customize-actions">
                             <button type="button" class="customize-reset" data-action="reset-custom">Reset</button>

@@ -48,6 +48,8 @@
     --logo-hue: 0deg;
     --logo-sat: 1;
     --logo-bright: 1;
+    --logo-overlay-color: #2386ff;
+    --logo-overlay-opacity: 0;
 }
 
 html {
@@ -133,9 +135,11 @@ body::before {
 }
 
 .logo-container {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 1rem;
+    position: relative;
+    isolation: isolate;
 }
 
 .logo-image {
@@ -170,6 +174,25 @@ body::before {
 
 .logo-image:hover::after {
     opacity: 1;
+}
+
+.logo-color-layer {
+    position: absolute;
+    inset: 0;
+    background: var(--logo-overlay-color, transparent);
+    opacity: var(--logo-overlay-opacity, 0);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    transition: opacity 0.3s ease;
+    border-radius: 12px;
+    mask-image: url('CXBD5052.JPG');
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-image: url('CXBD5052.JPG');
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
 }
 
 .nav-menu {
@@ -441,6 +464,73 @@ body::before {
 
 .customize-reset:hover {
     color: var(--accent-hover);
+}
+
+.saved-style-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    min-height: 2rem;
+}
+
+.saved-style-empty {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.saved-style-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-light);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.saved-style-pill button {
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.saved-style-delete {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 0;
+}
+
+.saved-style-delete:hover {
+    color: var(--accent-color);
+}
+
+.customize-save {
+    margin-top: 0.75rem;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.55rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.customize-save:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    box-shadow: 0 8px 20px rgba(35, 134, 255, 0.12);
 }
 
 .btn-mini {
