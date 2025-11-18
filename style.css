@@ -115,7 +115,7 @@ body {
 }
 
 .logo-image {
-    height: 65px;
+    height: 70px;
     width: auto;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     filter: drop-shadow(0 4px 12px rgba(35, 134, 255, 0.2));
@@ -158,12 +158,12 @@ body {
     text-decoration: none;
     color: var(--accent-color);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    padding: 0.45rem 0.9rem;
+    padding: 0.5rem 1rem;
     font-family: 'Inter', sans-serif;
     border-radius: 8px;
 }
