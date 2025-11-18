@@ -71,32 +71,20 @@ body::before {
     z-index: 0;
 }
 
-/* Futuristic Navigation with Advanced Glassmorphism */
+/* Modern Navigation with Glassmorphism */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-bottom: 1px solid rgba(35, 134, 255, 0.15);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(30px) saturate(200%);
+    -webkit-backdrop-filter: blur(30px) saturate(200%);
+    border-bottom: 1px solid rgba(35, 134, 255, 0.1);
     z-index: 1000;
     padding: 0.95rem 0;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 40px rgba(35, 134, 255, 0.12), 0 1px 0 0 rgba(0, 0, 0, 0.05);
-    position: relative;
-}
-
-.navbar::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(35, 134, 255, 0.6), transparent);
-    opacity: 0.6;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 30px rgba(35, 134, 255, 0.08), 0 1px 0 0 rgba(0, 0, 0, 0.05);
 }
 
 .navbar::before {
@@ -117,13 +105,9 @@ body::before {
 
 .navbar.scrolled {
     padding: 0.75rem 0;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 8px 50px rgba(35, 134, 255, 0.15), 0 2px 0 0 rgba(0, 0, 0, 0.05);
-    border-bottom-color: rgba(35, 134, 255, 0.2);
-}
-
-.navbar.scrolled::after {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8px 40px rgba(35, 134, 255, 0.12), 0 2px 0 0 rgba(0, 0, 0, 0.05);
+    border-bottom-color: rgba(35, 134, 255, 0.15);
 }
 
 .nav-container {
