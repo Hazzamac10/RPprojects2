@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RP PROJECTS - Professional Extension Design & Planning</title>
-    <link rel="stylesheet" href="style.css?v=45">
+    <link rel="stylesheet" href="style.css?v=46">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -66,6 +66,45 @@
                                 <input type="color" id="textColorPicker" data-var="text" data-default="#1e3a5f" value="#1e3a5f">
                             </label>
                         </div>
+
+                        <div class="customize-group">
+                            <p class="customize-subtitle">Heading Gradient Angle</p>
+                            <label class="customize-field customize-slider">
+                                <span>Angle</span>
+                                <input type="range" min="0" max="360" value="135" data-var="gradientAngle" data-default="135">
+                            </label>
+                        </div>
+
+                        <div class="customize-group">
+                            <p class="customize-subtitle">Navigation Bar</p>
+                            <div class="customize-grid">
+                                <label class="customize-field">
+                                    <span>Background</span>
+                                    <input type="color" id="navBgPicker" data-var="navBg" data-default="#ffffff" value="#ffffff">
+                                </label>
+                                <label class="customize-field">
+                                    <span>Text</span>
+                                    <input type="color" id="navTextPicker" data-var="navText" data-default="#2386ff" value="#2386ff">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="customize-group">
+                            <p class="customize-subtitle">Logo Tone</p>
+                            <label class="customize-field customize-slider">
+                                <span>Hue</span>
+                                <input type="range" min="-180" max="180" value="0" data-var="logoHue" data-default="0">
+                            </label>
+                            <label class="customize-field customize-slider">
+                                <span>Saturation</span>
+                                <input type="range" min="50" max="200" value="100" data-var="logoSat" data-default="100">
+                            </label>
+                            <label class="customize-field customize-slider">
+                                <span>Brightness</span>
+                                <input type="range" min="50" max="150" value="100" data-var="logoBright" data-default="100">
+                            </label>
+                        </div>
+
                         <div class="customize-actions">
                             <button type="button" class="customize-reset" data-action="reset-custom">Reset</button>
                         </div>
@@ -356,6 +395,6 @@
         </div>
     </footer>
 
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=5"></script>
 </body>
 </html>

@@ -3027,6 +3027,7 @@ function initCustomizePanel() {
     const STORAGE_KEY = 'custom-theme-vars';
     const root = document.documentElement;
     let customVars = {};
+    const inputs = panel.querySelectorAll('[data-var]');
 
     try {
         customVars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -3036,45 +3037,87 @@ function initCustomizePanel() {
 
     const applyCustomVars = () => {
         const setVar = (name, value) => {
-            if (value) root.style.setProperty(name, value);
+            if (value !== undefined && value !== null && value !== '') root.style.setProperty(name, value);
             else root.style.removeProperty(name);
         };
 
         if (customVars.primary) {
             setVar('--primary-color', customVars.primary);
             setVar('--brand-primary', customVars.primary);
-            setVar('--accent-color', customVars.primary);
-            setVar('--brand-accent', customVars.primary);
             setVar('--gradient-primary', `linear-gradient(135deg, ${customVars.primary}1a, ${customVars.primary})`);
+            if (!customVars.text) setVar('--heading-gradient-start', customVars.primary);
         } else {
-            ['--primary-color','--brand-primary','--accent-color','--brand-accent','--gradient-primary'].forEach(v => root.style.removeProperty(v));
+            ['--primary-color','--brand-primary','--gradient-primary'].forEach(name => root.style.removeProperty(name));
+            if (!customVars.text) root.style.removeProperty('--heading-gradient-start');
         }
 
         if (customVars.accent) {
-            setVar('--secondary-color', customVars.accent);
-            setVar('--brand-secondary', customVars.accent);
+            setVar('--accent-color', customVars.accent);
+            setVar('--accent-hover', adjustLightness(customVars.accent, -0.15));
+            setVar('--accent-light', adjustLightness(customVars.accent, 0.2));
+            setVar('--heading-gradient-end', customVars.accent);
+            if (!customVars.navText) setVar('--nav-link-color', customVars.accent);
         } else {
-            ['--secondary-color','--brand-secondary'].forEach(v => root.style.removeProperty(v));
+            ['--accent-color','--accent-hover','--accent-light','--heading-gradient-end'].forEach(name => root.style.removeProperty(name));
+            if (!customVars.navText) root.style.removeProperty('--nav-link-color');
         }
 
         if (customVars.background) {
             ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(v => setVar(v, customVars.background));
         } else {
-            ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(v => root.style.removeProperty(v));
+            ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(name => root.style.removeProperty(name));
         }
 
         if (customVars.text) {
             setVar('--text-primary', customVars.text);
             setVar('--text-secondary', customVars.text);
+            setVar('--heading-gradient-start', customVars.text);
         } else {
-            ['--text-primary','--text-secondary'].forEach(v => root.style.removeProperty(v));
+            ['--text-primary','--text-secondary'].forEach(name => root.style.removeProperty(name));
+            if (!customVars.primary) root.style.removeProperty('--heading-gradient-start');
+        }
+
+        if (customVars.navBg) {
+            setVar('--navbar-bg', hexToRgba(customVars.navBg, 0.9));
+        } else {
+            root.style.removeProperty('--navbar-bg');
+        }
+
+        if (customVars.navText) {
+            setVar('--nav-link-color', customVars.navText);
+        } else if (!customVars.accent) {
+            root.style.removeProperty('--nav-link-color');
+        }
+
+        if (customVars.gradientAngle) {
+            setVar('--gradient-angle', `${customVars.gradientAngle}deg`);
+        } else {
+            root.style.removeProperty('--gradient-angle');
+        }
+
+        if (customVars.logoHue) {
+            setVar('--logo-hue', `${customVars.logoHue}deg`);
+        } else {
+            root.style.removeProperty('--logo-hue');
+        }
+
+        if (customVars.logoSat) {
+            setVar('--logo-sat', (Number(customVars.logoSat) / 100).toString());
+        } else {
+            root.style.removeProperty('--logo-sat');
+        }
+
+        if (customVars.logoBright) {
+            setVar('--logo-bright', (Number(customVars.logoBright) / 100).toString());
+        } else {
+            root.style.removeProperty('--logo-bright');
         }
     };
 
     const syncInputs = () => {
-        panel.querySelectorAll('input[type="color"]').forEach(input => {
+        inputs.forEach(input => {
             const key = input.dataset.var;
-            if (customVars[key]) {
+            if (customVars[key] !== undefined) {
                 input.value = customVars[key];
             } else if (input.dataset.default) {
                 input.value = input.dataset.default;
@@ -3099,7 +3142,7 @@ function initCustomizePanel() {
         }
     });
 
-    panel.querySelectorAll('input[type="color"]').forEach(input => {
+    inputs.forEach(input => {
         const key = input.dataset.var;
         input.addEventListener('input', () => {
             customVars[key] = input.value;
@@ -3115,7 +3158,7 @@ function initCustomizePanel() {
         resetBtn.addEventListener('click', () => {
             customVars = {};
             localStorage.removeItem(STORAGE_KEY);
-            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary'].forEach(v => root.style.removeProperty(v));
+            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--accent-hover','--accent-light'].forEach(name => root.style.removeProperty(name));
             syncInputs();
         });
     }
@@ -3633,4 +3676,25 @@ function hexToRgb(hex) {
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
     return [r, g, b];
+}
+
+function adjustLightness(hex, delta) {
+    try {
+        const [r, g, b] = hexToRgb(hex);
+        let { h, s, l } = rgbToHsl(r, g, b);
+        l = clamp01(l + delta);
+        const rgb = hslToRgb(h, s, l);
+        return rgbToHex(rgb.r, rgb.g, rgb.b);
+    } catch (_) {
+        return hex;
+    }
+}
+
+function hexToRgba(hex, alpha = 1) {
+    try {
+        const [r, g, b] = hexToRgb(hex);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    } catch (_) {
+        return `rgba(255, 255, 255, ${alpha})`;
+    }
 }
