@@ -1493,3 +1493,131 @@ body[data-theme="elegant"] .btn-primary {
 body[data-theme="elegant"] .btn-primary:hover {
     background: #6b5a42;
 }
+
+body[data-theme="sleek"] {
+    --primary-color: #05070d;
+    --secondary-color: #0d111a;
+    --accent-color: #00f0ff;
+    --accent-hover: #00b7c5;
+    --accent-light: #7df6ff;
+    --text-primary: #f5f7fa;
+    --text-secondary: #cfd8e3;
+    --text-light: #a5b3c5;
+    --bg-primary: #03050a;
+    --bg-secondary: #050a13;
+    --bg-tertiary: #0a0f1f;
+    --bg-accent: #050a13;
+    --border-color: #101829;
+    --border-light: #1b2740;
+    --gradient-primary: linear-gradient(135deg, #00f0ff 0%, #0066ff 60%, #8b3dff 100%);
+    --gradient-hero: linear-gradient(180deg, #03050a 0%, #050a13 100%);
+}
+
+body[data-theme="sleek"] .navbar,
+body[data-theme="sleek"] .nav-menu {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+body[data-theme="sleek"] .service-card,
+body[data-theme="sleek"] .portfolio-item,
+body[data-theme="sleek"] .contact-form {
+    background: rgba(5, 10, 19, 0.6);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body[data-theme="editorial"] {
+    --primary-color: #18120a;
+    --secondary-color: #2f1f10;
+    --accent-color: #b88a5d;
+    --accent-hover: #9c734c;
+    --accent-light: #d3a97d;
+    --text-primary: #2a1b0f;
+    --text-secondary: #5a4533;
+    --text-light: #8c735c;
+    --bg-primary: #fdfaf4;
+    --bg-secondary: #f7f1e8;
+    --bg-tertiary: #efe6da;
+    --bg-accent: #f9f3ea;
+    --border-color: #e5d7c5;
+    --border-light: #f0e3d4;
+    --gradient-primary: linear-gradient(135deg, #b88a5d 0%, #d8b892 60%, #c89c6a 100%);
+    --gradient-hero: linear-gradient(180deg, #fdfaf4 0%, #f7f1e8 100%);
+}
+
+body[data-theme="editorial"] .nav-link {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.04em;
+    color: #2a1b0f;
+}
+
+body[data-theme="editorial"] .service-card,
+body[data-theme="editorial"] .portfolio-item,
+body[data-theme="editorial"] .contact-form {
+    border: 1px solid rgba(184, 138, 93, 0.25);
+    box-shadow: 0 15px 30px rgba(184, 138, 93, 0.12);
+}
+
+body[data-theme="glass"] {
+    --primary-color: #0b1220;
+    --secondary-color: #1a2340;
+    --accent-color: #7f8cff;
+    --accent-hover: #6570ff;
+    --accent-light: #b0b7ff;
+    --text-primary: #f0f4ff;
+    --text-secondary: #c7d0ff;
+    --text-light: #aab4de;
+    --bg-primary: #030712;
+    --bg-secondary: #050b1a;
+    --bg-tertiary: #0c1326;
+    --bg-accent: #050912;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-light: rgba(255, 255, 255, 0.12);
+    --gradient-primary: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(127, 140, 255, 0.35));
+    --gradient-hero: linear-gradient(180deg, rgba(3, 7, 18, 0.9) 0%, rgba(5, 11, 26, 0.95) 100%);
+}
+
+body[data-theme="glass"] .service-card,
+body[data-theme="glass"] .portfolio-item,
+body[data-theme="glass"] .contact-form {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+body[data-theme="blueprint"] {
+    --primary-color: #0f1b3d;
+    --secondary-color: #1d2e5c;
+    --accent-color: #3fa9f5;
+    --accent-hover: #2d8ed9;
+    --accent-light: #7ac8ff;
+    --text-primary: #0f1b3d;
+    --text-secondary: #2c3f60;
+    --text-light: #536d96;
+    --bg-primary: #f5faff;
+    --bg-secondary: #ecf4ff;
+    --bg-tertiary: #dbe9ff;
+    --bg-accent: #f0f7ff;
+    --border-color: #c3daff;
+    --border-light: #d8e7ff;
+    --gradient-primary: linear-gradient(135deg, #1f4daa 0%, #3fa9f5 100%);
+    --gradient-hero: linear-gradient(180deg, #f5faff 0%, #dbe9ff 100%);
+}
+
+body[data-theme="blueprint"] .hero {
+    background-image:
+        linear-gradient(0deg, rgba(31, 77, 170, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31, 77, 170, 0.08) 1px, transparent 1px),
+        var(--bg-primary);
+    background-size: 40px 40px, 40px 40px, auto;
+}
+
+body[data-theme="blueprint"] .service-card,
+body[data-theme="blueprint"] .portfolio-item,
+body[data-theme="blueprint"] .contact-form {
+    border: 1px solid rgba(31, 77, 170, 0.25);
+    box-shadow: 0 10px 25px rgba(31, 77, 170, 0.12);
+}
