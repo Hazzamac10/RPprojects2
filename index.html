@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RP PROJECTS - Professional Extension Design & Planning</title>
-    <link rel="stylesheet" href="style.css?v=46">
+    <link rel="stylesheet" href="style.css?v=47">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -37,6 +37,13 @@
                 <li class="reveal slide-down delay-5"><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-actions">
+                <button type="button" class="drag-mode-btn" id="dragModeBtn" title="Enable drag mode for images">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                        <path d="M12 2v4M6 6h4M18 6h-4"/>
+                    </svg>
+                    <span>Drag</span>
+                </button>
                 <div class="customize-wrapper">
                     <button type="button" class="customize-toggle" aria-expanded="false">
                         <span>Customize</span>
@@ -69,6 +76,21 @@
                             <label class="customize-field customize-slider">
                                 <span>Angle</span>
                                 <input type="range" min="0" max="360" value="135" data-var="gradientAngle" data-default="135">
+                            </label>
+                        </div>
+                        <div class="customize-group">
+                            <p class="customize-subtitle">Heading Glow</p>
+                            <label class="customize-field">
+                                <span>Color</span>
+                                <input type="color" id="glowColorPicker" data-var="glowColor" data-default="#2386ff" value="#2386ff">
+                            </label>
+                            <label class="customize-field customize-slider">
+                                <span>Intensity</span>
+                                <input type="range" min="0" max="100" value="20" data-var="glowIntensity" data-default="20">
+                            </label>
+                            <label class="customize-field customize-slider">
+                                <span>Blur</span>
+                                <input type="range" min="0" max="50" value="10" data-var="glowBlur" data-default="10">
                             </label>
                         </div>
                         <div class="customize-group">

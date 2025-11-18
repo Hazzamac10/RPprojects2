@@ -3134,6 +3134,32 @@ function initCustomizePanel() {
         } else {
             root.style.removeProperty('--logo-overlay-opacity');
         }
+
+        // Heading glow effect
+        const glowIntensity = toNumber(customVars.glowIntensity);
+        const glowBlur = toNumber(customVars.glowBlur);
+        
+        if (customVars.glowColor && glowIntensity !== null) {
+            const rgb = hexToRgb(customVars.glowColor);
+            if (rgb) {
+                const intensity = glowIntensity / 100;
+                const blur = glowBlur !== null ? glowBlur : 10;
+                setVar('--heading-glow-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                setVar('--heading-glow-color', customVars.glowColor);
+                setVar('--heading-glow-intensity', intensity.toString());
+                setVar('--heading-glow-blur', `${blur}px`);
+                // Create rgba strings for filter and text-shadow
+                setVar('--heading-glow-filter', `drop-shadow(0 2px ${blur}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity}))`);
+                setVar('--heading-glow-shadow', `0 0 ${blur * 3}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${intensity * 0.5})`);
+            }
+        } else {
+            root.style.removeProperty('--heading-glow-rgb');
+            root.style.removeProperty('--heading-glow-color');
+            root.style.removeProperty('--heading-glow-intensity');
+            root.style.removeProperty('--heading-glow-blur');
+            root.style.removeProperty('--heading-glow-filter');
+            root.style.removeProperty('--heading-glow-shadow');
+        }
     };
 
     const syncInputs = () => {
@@ -3190,7 +3216,7 @@ function initCustomizePanel() {
         resetBtn.addEventListener('click', () => {
             customVars = {};
             localStorage.removeItem(STORAGE_KEY);
-            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--logo-overlay-color','--logo-overlay-opacity'].forEach(v => root.style.removeProperty(v));
+            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary','--heading-gradient-start','--heading-gradient-end','--heading-gradient-angle','--navbar-bg','--nav-link-color','--logo-hue','--logo-sat','--logo-bright','--logo-overlay-color','--logo-overlay-opacity','--heading-glow-color','--heading-glow-rgb','--heading-glow-intensity','--heading-glow-blur','--heading-glow-filter','--heading-glow-shadow'].forEach(v => root.style.removeProperty(v));
             syncInputs();
             applyCustomVars();
             persistCustomVars();
@@ -3254,6 +3280,102 @@ function initCustomizePanel() {
     renderSavedStyles();
 }
 
+// Drag mode functionality for images
+function initDragMode() {
+    const dragBtn = document.getElementById('dragModeBtn');
+    if (!dragBtn) return;
+
+    let dragModeActive = false;
+    let draggedElement = null;
+    let offset = { x: 0, y: 0 };
+
+    dragBtn.addEventListener('click', () => {
+        dragModeActive = !dragModeActive;
+        dragBtn.classList.toggle('active', dragModeActive);
+        
+        const images = document.querySelectorAll('img.portfolio-img, img');
+        images.forEach(img => {
+            if (dragModeActive) {
+                img.classList.add('draggable-image');
+                img.draggable = true;
+                img.style.position = 'relative';
+            } else {
+                img.classList.remove('draggable-image');
+                img.draggable = false;
+            }
+        });
+    });
+
+    // Mouse drag functionality
+    document.addEventListener('mousedown', (e) => {
+        if (!dragModeActive) return;
+        const img = e.target.closest('.draggable-image');
+        if (!img) return;
+
+        e.preventDefault();
+        draggedElement = img;
+        const rect = img.getBoundingClientRect();
+        offset.x = e.clientX - rect.left;
+        offset.y = e.clientY - rect.top;
+
+        img.style.position = 'fixed';
+        img.style.zIndex = '10000';
+        img.style.pointerEvents = 'none';
+        img.style.cursor = 'grabbing';
+        
+        document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!dragModeActive || !draggedElement) return;
+        
+        draggedElement.style.left = (e.clientX - offset.x) + 'px';
+        draggedElement.style.top = (e.clientY - offset.y) + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (draggedElement) {
+            draggedElement.style.pointerEvents = '';
+            draggedElement.style.cursor = '';
+            draggedElement = null;
+            document.body.style.userSelect = '';
+        }
+    });
+
+    // Touch support for mobile
+    document.addEventListener('touchstart', (e) => {
+        if (!dragModeActive) return;
+        const img = e.target.closest('.draggable-image');
+        if (!img) return;
+
+        e.preventDefault();
+        draggedElement = img;
+        const touch = e.touches[0];
+        const rect = img.getBoundingClientRect();
+        offset.x = touch.clientX - rect.left;
+        offset.y = touch.clientY - rect.top;
+
+        img.style.position = 'fixed';
+        img.style.zIndex = '10000';
+        img.style.pointerEvents = 'none';
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!dragModeActive || !draggedElement) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        draggedElement.style.left = (touch.clientX - offset.x) + 'px';
+        draggedElement.style.top = (touch.clientY - offset.y) + 'px';
+    });
+
+    document.addEventListener('touchend', () => {
+        if (draggedElement) {
+            draggedElement.style.pointerEvents = '';
+            draggedElement = null;
+        }
+    });
+}
+
 // Initialize the application when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     initPreloader();
@@ -3263,6 +3385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize new theme switcher
     initNewThemeSwitcher();
     initCustomizePanel();
+    initDragMode();
     // Only apply auto-logo theme if no saved theme
     // Force derive theme from logo on every load to ensure brand color takes effect
     applyThemeFromLogo();
