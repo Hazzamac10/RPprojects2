@@ -3349,12 +3349,17 @@ function initDragMode() {
         placeholder.style.flexShrink = '0';
         portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
 
+        // Store the current visual position before making it fixed
+        const currentLeft = rect.left;
+        const currentTop = rect.top;
+
         portfolioItem.classList.add('dragging');
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
         portfolioItem.style.width = rect.width + 'px';
-        portfolioItem.style.left = e.clientX - offset.x + 'px';
-        portfolioItem.style.top = e.clientY - offset.y + 'px';
+        // Keep it in the exact same visual position initially
+        portfolioItem.style.left = currentLeft + 'px';
+        portfolioItem.style.top = currentTop + 'px';
         
         document.body.style.userSelect = 'none';
     };
@@ -3373,6 +3378,7 @@ function initDragMode() {
         if (isDragging) {
             e.preventDefault();
             // Use exact mouse position minus offset for precise tracking
+            // No need to account for scroll since position: fixed is relative to viewport
             const newLeft = e.clientX - offset.x;
             const newTop = e.clientY - offset.y;
             draggedElement.style.left = newLeft + 'px';
@@ -3451,12 +3457,17 @@ function initDragMode() {
         placeholder.style.flexShrink = '0';
         portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
 
+        // Store the current visual position before making it fixed
+        const currentLeft = rect.left;
+        const currentTop = rect.top;
+
         portfolioItem.classList.add('dragging');
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
         portfolioItem.style.width = rect.width + 'px';
-        portfolioItem.style.left = (touch.clientX - offset.x) + 'px';
-        portfolioItem.style.top = (touch.clientY - offset.y) + 'px';
+        // Keep it in the exact same visual position initially
+        portfolioItem.style.left = currentLeft + 'px';
+        portfolioItem.style.top = currentTop + 'px';
     };
 
     const handleTouchMove = (e) => {
@@ -3472,6 +3483,7 @@ function initDragMode() {
         if (isDragging) {
             e.preventDefault();
             // Use exact touch position minus offset for precise tracking
+            // No need to account for scroll since position: fixed is relative to viewport
             const newLeft = touch.clientX - offset.x;
             const newTop = touch.clientY - offset.y;
             draggedElement.style.left = newLeft + 'px';
