@@ -253,23 +253,31 @@ body {
     justify-content: center;
     position: relative;
     max-width: 900px;
-    padding-right: 50%;
+}
+
+.hero-stats-wrapper {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 4rem;
 }
 
 .hero-image-corner-top {
     position: absolute;
     top: 0;
-    right: -25%;
-    width: 50%;
-    max-width: 600px;
+    right: 0;
+    width: 45%;
+    max-width: 550px;
     z-index: 1;
     opacity: 0.95;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
 }
 
 .ai-hero-img-corner-top {
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
+    height: 100%;
     object-fit: cover;
     border-radius: 12px;
     box-shadow: var(--shadow-2xl);
@@ -278,7 +286,7 @@ body {
 }
 
 .hero-image-corner-top:hover .ai-hero-img-corner-top {
-    transform: scale(1.02) translateY(-4px);
+    transform: scale(1.01) translateY(-4px);
     box-shadow: var(--shadow-xl);
 }
 
@@ -405,9 +413,8 @@ body {
 
 /* Hero Stats - Modern Cards */
 .hero-stats {
-    max-width: 1400px;
     margin: 8rem auto 0;
-    padding: 0 4rem;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 4rem;
@@ -415,6 +422,9 @@ body {
     z-index: 2;
     border-top: 1px solid var(--border-light);
     padding-top: 5rem;
+    align-items: start;
+    padding-left: 0;
+    padding-right: 50%;
 }
 
 .stat-item {
@@ -931,8 +941,12 @@ body.page-loaded .slide-in-left {
 /* Responsive Design */
 @media (max-width: 1400px) {
     .hero-image-corner-top {
-        right: -20%;
-        width: 45%;
+        width: 40%;
+        max-width: 500px;
+    }
+    
+    .hero-stats {
+        padding-right: 45%;
     }
 }
 
@@ -940,17 +954,17 @@ body.page-loaded .slide-in-left {
     .nav-container,
     .container,
     .hero-content,
-    .hero-stats {
+    .hero-stats-wrapper {
         padding: 0 3rem;
     }
     
     .hero-image-corner-top {
-        right: -15%;
-        width: 40%;
+        width: 38%;
+        max-width: 450px;
     }
     
-    .hero-text {
-        padding-right: 45%;
+    .hero-stats {
+        padding-right: 42%;
     }
     
     .services-grid {
@@ -959,7 +973,8 @@ body.page-loaded .slide-in-left {
 }
 
 @media (max-width: 1024px) {
-    .hero-content {
+    .hero-content,
+    .hero-stats-wrapper {
         padding: 0 2rem;
     }
     
@@ -971,11 +986,19 @@ body.page-loaded .slide-in-left {
         max-width: 500px;
         margin: 0 auto 3rem;
         opacity: 1;
+        height: auto;
     }
     
-    .hero-text {
+    .ai-hero-img-corner-top {
+        height: auto;
+        min-height: 300px;
+        aspect-ratio: 4 / 3;
+    }
+    
+    .hero-stats {
         padding-right: 0;
-        max-width: 100%;
+        grid-template-columns: 1fr;
+        gap: 2rem;
     }
     
     .services-grid {
@@ -990,11 +1013,6 @@ body.page-loaded .slide-in-left {
         grid-template-columns: 1fr;
     }
     
-    .hero-stats {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-    
     .stat-item:not(:last-child) {
         border-right: none;
         border-bottom: 1px solid var(--border-light);
@@ -1007,7 +1025,7 @@ body.page-loaded .slide-in-left {
     .nav-container,
     .container,
     .hero-content,
-    .hero-stats {
+    .hero-stats-wrapper {
         padding: 0 2rem;
     }
     
