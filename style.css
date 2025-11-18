@@ -347,19 +347,29 @@ body::before {
 
 .guide-line {
     position: absolute;
-    background: rgba(35, 134, 255, 0.4);
+    background: rgba(35, 134, 255, 0.5);
     display: none;
-    box-shadow: 0 0 4px rgba(35, 134, 255, 0.6);
+    box-shadow: 0 0 6px rgba(35, 134, 255, 0.8);
+    animation: guidePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes guidePulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
 }
 
 .guide-vertical {
-    width: 1px;
+    width: 2px;
     height: 100vh;
 }
 
 .guide-horizontal {
     width: 100vw;
-    height: 1px;
+    height: 2px;
 }
 
 .theme-switcher {

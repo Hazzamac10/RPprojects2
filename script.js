@@ -3399,25 +3399,35 @@ function initDragMode() {
             otherItems.forEach(item => {
                 const itemRect = item.getBoundingClientRect();
                 
-                // Check vertical alignment (left/right edges)
-                if (Math.abs(draggedRect.left - itemRect.left) < SNAP_THRESHOLD) {
+                // Check vertical alignment (left/right edges) - prioritize closest match
+                const leftLeft = Math.abs(draggedRect.left - itemRect.left);
+                const rightRight = Math.abs(draggedRect.right - itemRect.right);
+                const leftRight = Math.abs(draggedRect.left - itemRect.right);
+                const rightLeft = Math.abs(draggedRect.right - itemRect.left);
+                
+                if (leftLeft < SNAP_THRESHOLD && (snapX === null || leftLeft < Math.abs(snapX - draggedRect.left))) {
                     snapX = itemRect.left;
-                } else if (Math.abs(draggedRect.right - itemRect.right) < SNAP_THRESHOLD) {
+                } else if (rightRight < SNAP_THRESHOLD && (snapX === null || rightRight < Math.abs(snapX - draggedRect.left))) {
                     snapX = itemRect.right - draggedRect.width;
-                } else if (Math.abs(draggedRect.left - itemRect.right) < SNAP_THRESHOLD) {
+                } else if (leftRight < SNAP_THRESHOLD && (snapX === null || leftRight < Math.abs(snapX - draggedRect.left))) {
                     snapX = itemRect.right;
-                } else if (Math.abs(draggedRect.right - itemRect.left) < SNAP_THRESHOLD) {
+                } else if (rightLeft < SNAP_THRESHOLD && (snapX === null || rightLeft < Math.abs(snapX - draggedRect.left))) {
                     snapX = itemRect.left - draggedRect.width;
                 }
                 
-                // Check horizontal alignment (top/bottom edges)
-                if (Math.abs(draggedRect.top - itemRect.top) < SNAP_THRESHOLD) {
+                // Check horizontal alignment (top/bottom edges) - prioritize closest match
+                const topTop = Math.abs(draggedRect.top - itemRect.top);
+                const bottomBottom = Math.abs(draggedRect.bottom - itemRect.bottom);
+                const topBottom = Math.abs(draggedRect.top - itemRect.bottom);
+                const bottomTop = Math.abs(draggedRect.bottom - itemRect.top);
+                
+                if (topTop < SNAP_THRESHOLD && (snapY === null || topTop < Math.abs(snapY - draggedRect.top))) {
                     snapY = itemRect.top;
-                } else if (Math.abs(draggedRect.bottom - itemRect.bottom) < SNAP_THRESHOLD) {
+                } else if (bottomBottom < SNAP_THRESHOLD && (snapY === null || bottomBottom < Math.abs(snapY - draggedRect.top))) {
                     snapY = itemRect.bottom - draggedRect.height;
-                } else if (Math.abs(draggedRect.top - itemRect.bottom) < SNAP_THRESHOLD) {
+                } else if (topBottom < SNAP_THRESHOLD && (snapY === null || topBottom < Math.abs(snapY - draggedRect.top))) {
                     snapY = itemRect.bottom;
-                } else if (Math.abs(draggedRect.bottom - itemRect.top) < SNAP_THRESHOLD) {
+                } else if (bottomTop < SNAP_THRESHOLD && (snapY === null || bottomTop < Math.abs(snapY - draggedRect.top))) {
                     snapY = itemRect.top - draggedRect.height;
                 }
             });
@@ -3451,14 +3461,14 @@ function initDragMode() {
             if (direction === 'vertical') {
                 guide.style.left = position + 'px';
                 guide.style.top = '0';
-                guide.style.width = '1px';
+                guide.style.width = '2px';
                 guide.style.height = '100vh';
                 guide.style.display = 'block';
             } else {
                 guide.style.top = position + 'px';
                 guide.style.left = '0';
                 guide.style.width = '100vw';
-                guide.style.height = '1px';
+                guide.style.height = '2px';
                 guide.style.display = 'block';
             }
         }
