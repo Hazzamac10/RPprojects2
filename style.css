@@ -259,6 +259,9 @@ body {
     position: relative;
     max-width: 900px;
     margin: 0 auto;
+    animation: fadeInUp 0.8s ease-out;
+    padding-right: 50%;
+    text-align: left;
 }
 
 .hero-image-corner {
@@ -294,13 +297,6 @@ body {
 }
 
 @media (max-width: 1200px) {
-    .hero-image-corner {
-        right: -10%;
-        width: 38%;
-    }
-}
-
-@media (max-width: 1200px) {
     .hero-content {
         padding: 0 3rem;
     }
@@ -332,19 +328,7 @@ body {
     
     .hero-text {
         max-width: 100%;
-    }
-}
-
-.hero-text {
-    animation: fadeInUp 0.8s ease-out;
-    padding-right: 50%;
-    text-align: left;
-}
-
-@media (max-width: 1024px) {
-    .hero-text {
         padding-right: 0;
-        text-align: left;
     }
 }
 
