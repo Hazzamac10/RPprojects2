@@ -744,7 +744,12 @@ body::before {
     opacity: 0.6;
 }
 
-.service-card::before {
+.service-card-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.service-card-overlay {
     content: '';
     position: absolute;
     inset: 0;
@@ -752,9 +757,11 @@ body::before {
     opacity: 0;
     transition: opacity 0.5s ease;
     z-index: 0;
+    border-radius: 20px;
+    pointer-events: none;
 }
 
-.service-card:hover::before {
+.service-card:hover .service-card-overlay {
     opacity: 1;
 }
 
