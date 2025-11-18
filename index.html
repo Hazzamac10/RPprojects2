@@ -39,6 +39,38 @@
                 <div class="theme-switcher">
                     <button type="button" class="theme-btn active" data-theme="modern" title="Modern Style">M</button>
                 </div>
+                <div class="customize-wrapper">
+                    <button type="button" class="customize-toggle" aria-expanded="false">
+                        <span>Customize</span>
+                        <svg viewBox="0 0 20 20" aria-hidden="true">
+                            <path d="M10 2l2.39 4.84 5.34.78-3.86 3.76.91 5.33L10 13.77 5.22 16.7l.91-5.33L2.27 7.62l5.34-.78L10 2z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <div class="customize-panel" id="customizePanel" hidden>
+                        <p class="customize-title">Live update the palette</p>
+                        <div class="customize-grid">
+                            <label class="customize-field">
+                                <span>Primary</span>
+                                <input type="color" id="primaryColorPicker" data-var="primary" data-default="#2386ff" value="#2386ff">
+                            </label>
+                            <label class="customize-field">
+                                <span>Accent</span>
+                                <input type="color" id="accentColorPicker" data-var="accent" data-default="#1e3a5f" value="#1e3a5f">
+                            </label>
+                            <label class="customize-field">
+                                <span>Background</span>
+                                <input type="color" id="backgroundColorPicker" data-var="background" data-default="#ffffff" value="#ffffff">
+                            </label>
+                            <label class="customize-field">
+                                <span>Text</span>
+                                <input type="color" id="textColorPicker" data-var="text" data-default="#1e3a5f" value="#1e3a5f">
+                            </label>
+                        </div>
+                        <div class="customize-actions">
+                            <button type="button" class="customize-reset" data-action="reset-custom">Reset</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="hamburger">
                 <span class="bar"></span>

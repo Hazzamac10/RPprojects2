@@ -3018,6 +3018,109 @@ function initNewThemeSwitcher() {
     });
 }
 
+function initCustomizePanel() {
+    const wrapper = document.querySelector('.customize-wrapper');
+    const toggle = wrapper ? wrapper.querySelector('.customize-toggle') : null;
+    const panel = document.getElementById('customizePanel');
+    if (!wrapper || !toggle || !panel) return;
+
+    const STORAGE_KEY = 'custom-theme-vars';
+    const root = document.documentElement;
+    let customVars = {};
+
+    try {
+        customVars = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch (_) {
+        customVars = {};
+    }
+
+    const applyCustomVars = () => {
+        const setVar = (name, value) => {
+            if (value) root.style.setProperty(name, value);
+            else root.style.removeProperty(name);
+        };
+
+        if (customVars.primary) {
+            setVar('--primary-color', customVars.primary);
+            setVar('--brand-primary', customVars.primary);
+            setVar('--accent-color', customVars.primary);
+            setVar('--brand-accent', customVars.primary);
+            setVar('--gradient-primary', `linear-gradient(135deg, ${customVars.primary}1a, ${customVars.primary})`);
+        } else {
+            ['--primary-color','--brand-primary','--accent-color','--brand-accent','--gradient-primary'].forEach(v => root.style.removeProperty(v));
+        }
+
+        if (customVars.accent) {
+            setVar('--secondary-color', customVars.accent);
+            setVar('--brand-secondary', customVars.accent);
+        } else {
+            ['--secondary-color','--brand-secondary'].forEach(v => root.style.removeProperty(v));
+        }
+
+        if (customVars.background) {
+            ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(v => setVar(v, customVars.background));
+        } else {
+            ['--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent'].forEach(v => root.style.removeProperty(v));
+        }
+
+        if (customVars.text) {
+            setVar('--text-primary', customVars.text);
+            setVar('--text-secondary', customVars.text);
+        } else {
+            ['--text-primary','--text-secondary'].forEach(v => root.style.removeProperty(v));
+        }
+    };
+
+    const syncInputs = () => {
+        panel.querySelectorAll('input[type="color"]').forEach(input => {
+            const key = input.dataset.var;
+            if (customVars[key]) {
+                input.value = customVars[key];
+            } else if (input.dataset.default) {
+                input.value = input.dataset.default;
+            }
+        });
+    };
+
+    applyCustomVars();
+    syncInputs();
+
+    toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', (!expanded).toString());
+        panel.hidden = expanded;
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+            panel.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    panel.querySelectorAll('input[type="color"]').forEach(input => {
+        const key = input.dataset.var;
+        input.addEventListener('input', () => {
+            customVars[key] = input.value;
+            applyCustomVars();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(customVars));
+            localStorage.removeItem('site-theme');
+            localStorage.removeItem('site-theme-custom');
+        });
+    });
+
+    const resetBtn = panel.querySelector('[data-action="reset-custom"]');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            customVars = {};
+            localStorage.removeItem(STORAGE_KEY);
+            ['--primary-color','--secondary-color','--accent-color','--brand-primary','--brand-secondary','--brand-accent','--bg-primary','--bg-secondary','--bg-tertiary','--bg-accent','--text-primary','--text-secondary','--gradient-primary'].forEach(v => root.style.removeProperty(v));
+            syncInputs();
+        });
+    }
+}
+
 // Initialize the application when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     initPreloader();
@@ -3026,6 +3129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize new theme switcher
     initNewThemeSwitcher();
+    initCustomizePanel();
     // Only apply auto-logo theme if no saved theme
     // Force derive theme from logo on every load to ensure brand color takes effect
     applyThemeFromLogo();
