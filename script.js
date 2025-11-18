@@ -3070,9 +3070,93 @@ function triggerInitialReveals() {
             const isVisible = rect.top < vh * 0.9 && rect.bottom > 0;
             if (isVisible) el.classList.add('in-view');
         });
+        // Trigger animated counters
+        initAnimatedCounters();
     } catch (_) {
         // no-op
     }
+}
+
+// Animated counters for stats
+function initAnimatedCounters() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    const animateCounter = (element) => {
+        const text = element.textContent.trim();
+        const isPercentage = text.includes('%');
+        const isPlus = text.includes('+');
+        
+        // Extract number
+        const num = parseInt(text.replace(/[^0-9]/g, ''));
+        if (!num) return;
+        
+        const duration = 2000; // 2 seconds
+        const steps = 60;
+        const increment = num / steps;
+        let current = 0;
+        let step = 0;
+        
+        const timer = setInterval(() => {
+            step++;
+            current = Math.min(Math.ceil(increment * step), num);
+            
+            let displayText = current.toString();
+            if (isPlus) displayText += '+';
+            if (isPercentage) displayText += '%';
+            
+            element.textContent = displayText;
+            
+            if (step >= steps) {
+                clearInterval(timer);
+                element.textContent = text; // Ensure final value
+            }
+        }, duration / steps);
+    };
+    
+    // Create observer for stats
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statNumber = entry.target.querySelector('.stat-number');
+                if (statNumber && !statNumber.dataset.animated) {
+                    statNumber.dataset.animated = 'true';
+                    animateCounter(statNumber);
+                }
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    // Observe stat items
+    document.querySelectorAll('.stat-item').forEach(item => {
+        statsObserver.observe(item);
+    });
+}
+
+// Enhanced scroll reveal with stagger
+function initEnhancedReveals() {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+    
+    document.querySelectorAll('.reveal').forEach(el => {
+        revealObserver.observe(el);
+    });
+}
+
+// Initialize enhanced reveals on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initEnhancedReveals);
+} else {
+    initEnhancedReveals();
 }
 
 async function renderHeroPdfToCanvas(pdfUrl, canvas) {
