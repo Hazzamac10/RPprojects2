@@ -2994,22 +2994,18 @@ function initNewThemeSwitcher() {
 
     // Theme button click handlers
     themeButtons.forEach(btn => {
-        // Remove any existing listeners by cloning
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        
-        newBtn.addEventListener('click', (e) => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const theme = newBtn.dataset.theme;
+            const theme = btn.dataset.theme;
             
             console.log('Theme button clicked:', theme);
             
             // Remove active class from all buttons
-            themeButtons.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
             
             // Add active class to clicked button
-            newBtn.classList.add('active');
+            btn.classList.add('active');
             
             // Apply theme to body
             body.setAttribute('data-theme', theme);
