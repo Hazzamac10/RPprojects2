@@ -2968,18 +2968,68 @@ function hslToRgb(h, s, l) {
     };
 }
 
+// Standalone theme switcher initialization
+function initNewThemeSwitcher() {
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const body = document.body;
+    
+    if (themeButtons.length === 0) {
+        console.warn('Theme buttons not found, retrying...');
+        setTimeout(initNewThemeSwitcher, 200);
+        return;
+    }
+    
+    console.log('Found theme buttons:', themeButtons.length);
+    
+    // Load saved theme or default to modern
+    const savedTheme = localStorage.getItem('websiteTheme') || 'modern';
+    body.setAttribute('data-theme', savedTheme);
+    themeButtons.forEach(btn => {
+        if (btn.dataset.theme === savedTheme) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    // Theme button click handlers
+    themeButtons.forEach(btn => {
+        // Remove any existing listeners by cloning
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        newBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const theme = newBtn.dataset.theme;
+            
+            console.log('Theme button clicked:', theme);
+            
+            // Remove active class from all buttons
+            themeButtons.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            newBtn.classList.add('active');
+            
+            // Apply theme to body
+            body.setAttribute('data-theme', theme);
+            
+            // Save theme preference
+            localStorage.setItem('websiteTheme', theme);
+            
+            console.log('Theme applied:', theme);
+        });
+    });
+}
+
 // Initialize the application when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     initPreloader();
     const generator = new BuildingGenerator();
     initThemeSwitcher();
     
-    // Ensure theme switcher runs after a short delay to catch any late-rendered elements
-    setTimeout(() => {
-        if (generator && typeof generator.setupThemeSwitcher === 'function') {
-            generator.setupThemeSwitcher();
-        }
-    }, 100);
+    // Initialize new theme switcher
+    initNewThemeSwitcher();
     // Only apply auto-logo theme if no saved theme
     // Force derive theme from logo on every load to ensure brand color takes effect
     applyThemeFromLogo();
