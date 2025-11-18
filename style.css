@@ -260,19 +260,18 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 4rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: start;
 }
 
 .hero-image-corner-top {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 45%;
-    max-width: 550px;
-    z-index: 1;
-    opacity: 0.95;
+    width: 500px;
     height: 100%;
     display: flex;
     align-items: flex-start;
+    position: relative;
 }
 
 .ai-hero-img-corner-top {
@@ -413,7 +412,7 @@ body {
 
 /* Hero Stats - Modern Cards */
 .hero-stats {
-    margin: 8rem auto 0;
+    margin: 8rem 0 0;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -423,8 +422,6 @@ body {
     border-top: 1px solid var(--border-light);
     padding-top: 5rem;
     align-items: start;
-    padding-left: 0;
-    padding-right: 50%;
 }
 
 .stat-item {
@@ -941,12 +938,7 @@ body.page-loaded .slide-in-left {
 /* Responsive Design */
 @media (max-width: 1400px) {
     .hero-image-corner-top {
-        width: 40%;
-        max-width: 500px;
-    }
-    
-    .hero-stats {
-        padding-right: 45%;
+        width: 450px;
     }
 }
 
@@ -959,12 +951,11 @@ body.page-loaded .slide-in-left {
     }
     
     .hero-image-corner-top {
-        width: 38%;
-        max-width: 450px;
+        width: 400px;
     }
     
-    .hero-stats {
-        padding-right: 42%;
+    .hero-stats-wrapper {
+        gap: 3rem;
     }
     
     .services-grid {
@@ -978,14 +969,15 @@ body.page-loaded .slide-in-left {
         padding: 0 2rem;
     }
     
+    .hero-stats-wrapper {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
     .hero-image-corner-top {
-        position: relative;
-        right: auto;
-        top: auto;
         width: 100%;
         max-width: 500px;
-        margin: 0 auto 3rem;
-        opacity: 1;
+        margin: 0 auto;
         height: auto;
     }
     
@@ -996,7 +988,6 @@ body.page-loaded .slide-in-left {
     }
     
     .hero-stats {
-        padding-right: 0;
         grid-template-columns: 1fr;
         gap: 2rem;
     }
