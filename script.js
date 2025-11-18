@@ -2958,7 +2958,87 @@ document.addEventListener('DOMContentLoaded', () => {
         'wetransfer_project-2-single-storey-rear-extension-sent_2025-10-27_1020/Project 6 New Build/New Build.pdf',
         document.getElementById('hero-pdf-canvas')
     );
+
+    // FormSubmit handles form submission automatically
+    // Add simple form handler for better UX
+    initFormSubmitHandler();
 });
+
+// Simple form handler for FormSubmit (improves UX)
+function initFormSubmitHandler() {
+    const form = document.querySelector('form[action*="formsubmit.co"]');
+    const formMessage = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        
+        // Show success message after a short delay (FormSubmit redirects, but this provides immediate feedback)
+        setTimeout(() => {
+            if (formMessage) {
+                formMessage.style.display = 'block';
+                formMessage.className = 'form-message form-message-success';
+                formMessage.textContent = 'Thank you! Your message has been sent. We\'ll get back to you soon.';
+            }
+        }, 500);
+    });
+}
+
+// Initialize EmailJS contact form
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    const formMessage = document.getElementById('formMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (!form) return;
+
+    // Initialize EmailJS (you'll need to replace this with your actual EmailJS Public Key)
+    // Get this from: https://www.emailjs.com/ → Account → General → Public Key
+    emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS Public Key
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        formMessage.style.display = 'none';
+
+        try {
+            // Replace these with your EmailJS Service ID and Template ID
+            // Get Service ID from: Email Services → Your Service
+            // Get Template ID from: Email Templates → Your Template
+            const result = await emailjs.sendForm(
+                'YOUR_SERVICE_ID',    // Replace with your EmailJS Service ID
+                'YOUR_TEMPLATE_ID',   // Replace with your EmailJS Template ID
+                form
+            );
+
+            // Success
+            formMessage.style.display = 'block';
+            formMessage.className = 'form-message form-message-success';
+            formMessage.textContent = 'Thank you! Your message has been sent. We\'ll get back to you soon.';
+            form.reset();
+            
+        } catch (error) {
+            // Error
+            formMessage.style.display = 'block';
+            formMessage.className = 'form-message form-message-error';
+            formMessage.textContent = 'Sorry, there was an error sending your message. Please try again or contact us directly at info@rpprojects.co.uk';
+            console.error('EmailJS Error:', error);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            
+            // Scroll to message
+            formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+}
 
 function initPreloader() {
     const preloader = document.getElementById('preloader');
