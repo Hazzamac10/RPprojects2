@@ -2157,19 +2157,6 @@ class BuildingGenerator {
         });
     }
 
-        // Contact form handling
-        const contactForm = document.querySelector('.contact-form');
-        if (contactForm) {
-            const hasAction = !!contactForm.getAttribute('action');
-            if (!hasAction) {
-                contactForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleContactForm(e.target);
-                });
-            }
-        }
-    }
-
     initRevealObserver() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {

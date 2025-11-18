@@ -1328,7 +1328,7 @@ body.page-loaded {
 
 /* Theme Styles */
 body[data-theme="modern"] {
-    /* Current modern theme - default */
+    /* Current modern theme - default, uses root variables */
 }
 
 body[data-theme="dark"] {
