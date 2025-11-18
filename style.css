@@ -371,11 +371,6 @@ body {
 @media (max-width: 768px) {
     .hero-subtitle {
         text-align: left;
-    }
-}
-
-@media (max-width: 768px) {
-    .hero-subtitle {
         margin-bottom: 2.5rem;
     }
 }
