@@ -168,6 +168,8 @@ body::before {
     border-radius: 12px;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    border: none;
+    box-shadow: none;
 }
 
 .nav-link {
@@ -1348,8 +1350,9 @@ body[data-theme="dark"] .navbar {
 }
 
 body[data-theme="dark"] .nav-menu {
-    background: rgba(26, 26, 26, 0.8);
-    border: 1px solid rgba(0, 212, 255, 0.15);
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 body[data-theme="dark"] .nav-link {
@@ -1393,8 +1396,9 @@ body[data-theme="bold"] .navbar {
 }
 
 body[data-theme="bold"] .nav-menu {
-    background: rgba(255, 245, 240, 0.9);
-    border: 2px solid rgba(255, 107, 53, 0.2);
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 body[data-theme="bold"] .nav-link {
@@ -1449,9 +1453,9 @@ body[data-theme="elegant"] .navbar {
 }
 
 body[data-theme="elegant"] .nav-menu {
-    background: rgba(245, 242, 237, 0.9);
-    border: 1px solid rgba(139, 115, 85, 0.2);
-    border-radius: 8px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 body[data-theme="elegant"] .nav-link {
