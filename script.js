@@ -2110,13 +2110,7 @@ class BuildingGenerator {
             });
         });
 
-        // Keep navbar transparent (remove forced dark background on scroll)
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (!navbar) return;
-            navbar.style.background = 'transparent';
-            navbar.style.borderBottom = '1px solid transparent';
-        });
+        // Navbar background is now handled by CSS - always matches regular background
 
         // Theme switcher
         this.setupThemeSwitcher();
@@ -3096,21 +3090,9 @@ function initCustomizePanel() {
             ['--text-primary','--text-secondary'].forEach(v => root.style.removeProperty(v));
         }
 
-        if (customVars.navBg) {
-            // Convert hex color to rgba with transparency for glassmorphism effect
-            const rgb = hexToRgb(customVars.navBg);
-            if (rgb && Array.isArray(rgb)) {
-                // Use 0.85 opacity for normal state, 0.98 for scrolled state
-                setVar('--navbar-bg', `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.85)`);
-                setVar('--navbar-bg-scrolled', `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.98)`);
-            } else {
-                // Fallback: just use the hex color directly
-                setVar('--navbar-bg', customVars.navBg);
-            }
-        } else {
-            root.style.removeProperty('--navbar-bg');
-            root.style.removeProperty('--navbar-bg-scrolled');
-        }
+        // Navbar background now always matches regular background - removed custom color functionality
+        root.style.removeProperty('--navbar-bg');
+        root.style.removeProperty('--navbar-bg-scrolled');
 
         if (customVars.navText) {
             setVar('--nav-link-color', customVars.navText);
