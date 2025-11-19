@@ -762,7 +762,8 @@ body::before {
     color: var(--text-primary);
     margin-bottom: 0.5rem;
     letter-spacing: -0.03em;
-    line-height: 1;
+    line-height: 1.1;
+    padding-bottom: 0.1em;
     background: linear-gradient(
         var(--heading-gradient-angle, 135deg),
         var(--heading-gradient-start, var(--text-primary, #1e3a5f)) 0%,
