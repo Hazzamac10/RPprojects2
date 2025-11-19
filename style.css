@@ -719,6 +719,10 @@ body::before {
     padding: 0 4rem;
     position: relative;
     z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
 }
 
 .hero-text {
@@ -728,25 +732,34 @@ body::before {
     flex-direction: column;
     justify-content: center;
     position: relative;
-    max-width: 900px;
 }
 
 .hero-stats-wrapper {
     position: relative;
     max-width: 1400px;
-    margin: 15rem auto 0;
+    margin: 4rem auto 0;
     padding: 0 4rem;
-    padding-top: 5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.hero-stats {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
+    position: relative;
+    z-index: 2;
+    align-items: start;
+    max-width: 500px;
 }
 
 .hero-image-carousel {
     position: relative;
     width: 100%;
-    max-width: 400px;
-    height: 300px;
-    margin-bottom: 4rem;
-    margin-left: auto;
-    margin-right: 0;
+    max-width: 500px;
+    height: 350px;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(35, 134, 255, 0.05);
@@ -931,16 +944,6 @@ body::before {
 }
 
 /* Hero Stats - Modern Cards */
-.hero-stats {
-    margin: 0 auto;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4rem;
-    position: relative;
-    z-index: 2;
-    align-items: start;
-}
 
 .stat-item {
     background: transparent;
@@ -1565,9 +1568,19 @@ body.page-loaded .slide-in-left {
 }
 
 @media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
     .hero-content,
     .hero-stats-wrapper {
         padding: 0 2rem;
+    }
+    
+    .hero-image-carousel {
+        max-width: 100%;
+        margin: 0 auto;
     }
     
     .hero-stats {
