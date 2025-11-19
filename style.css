@@ -458,7 +458,8 @@ body::before {
     min-height: auto;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--border-light);
+    /* Slightly stronger separation line across full page width */
+    border-bottom: 1px solid rgba(15, 23, 42, 0.12);
 }
 
 .hero::after {
@@ -988,6 +989,8 @@ body::before {
 .portfolio {
     padding: 10rem 0;
     background: var(--bg-primary);
+    /* Faint line separating the section above */
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .portfolio-project {
