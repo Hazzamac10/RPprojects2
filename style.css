@@ -752,7 +752,7 @@ body::before {
 .hero-image-carousel {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     height: 350px;
     border-radius: 16px;
     overflow: hidden;
