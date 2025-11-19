@@ -3618,6 +3618,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render portfolio PDF drawings to canvas
     initPortfolioDrawings();
 
+    // Initialize hero image carousel
+    initHeroImageCarousel();
+
     // FormSubmit handles form submission automatically
     initFormSubmitHandler();
 });
@@ -3882,6 +3885,71 @@ function initPortfolioDrawings() {
             renderPortfolioPdfToCanvas(pdfUrl, canvas);
         }
     });
+}
+
+function initHeroImageCarousel() {
+    const carousel = document.querySelector('.hero-image-carousel');
+    if (!carousel) return;
+
+    const images = carousel.querySelectorAll('.carousel-image');
+    if (images.length === 0) return;
+
+    // Render PDF drawing in carousel if present
+    const carouselCanvas = carousel.querySelector('canvas[data-pdf]');
+    if (carouselCanvas) {
+        const pdfUrl = carouselCanvas.getAttribute('data-pdf');
+        if (pdfUrl) {
+            renderCarouselPdfToCanvas(pdfUrl, carouselCanvas);
+        }
+    }
+
+    let currentIndex = 0;
+
+    function showNextImage() {
+        // Remove active class from current image
+        images[currentIndex].classList.remove('active');
+        
+        // Move to next image
+        currentIndex = (currentIndex + 1) % images.length;
+        
+        // Add active class to new image
+        images[currentIndex].classList.add('active');
+    }
+
+    // Start the carousel - change every 5 seconds
+    setInterval(showNextImage, 5000);
+}
+
+async function renderCarouselPdfToCanvas(pdfUrl, canvas) {
+    if (!canvas || !window['pdfjsLib']) return;
+    try {
+        const pdf = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
+        const page = await pdf.getPage(1);
+        
+        // Use carousel container dimensions
+        const container = canvas.closest('.hero-image-carousel');
+        const containerWidth = container ? container.clientWidth : 400;
+        const containerHeight = container ? container.clientHeight : 300;
+        
+        // Fit page to canvas while maintaining aspect ratio
+        const viewport = page.getViewport({ scale: 1 });
+        const scaleX = containerWidth / viewport.width;
+        const scaleY = containerHeight / viewport.height;
+        const scale = Math.min(scaleX, scaleY);
+        const fitted = page.getViewport({ scale });
+        
+        canvas.width = Math.floor(fitted.width);
+        canvas.height = Math.floor(fitted.height);
+        const ctx = canvas.getContext('2d');
+        
+        // White background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        await page.render({ canvasContext: ctx, viewport: fitted }).promise;
+    } catch (e) {
+        console.error('Failed to render carousel PDF:', e);
+    }
 }
 
 function removeWhiteLogoBackgrounds() {
