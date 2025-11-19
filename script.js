@@ -3395,8 +3395,9 @@ function initDragMode() {
                 
                 // Keep the item at its current position (don't reset)
                 // The item stays where it was dropped
+                // Keep the placeholder to prevent grid reflow - don't remove it
             } else {
-                // If it was just a click, restore position
+                // If it was just a click, restore position and remove placeholder
                 if (draggedElement.dataset.initialLeft && draggedElement.dataset.initialTop) {
                     draggedElement.style.position = '';
                     draggedElement.style.left = '';
@@ -3404,12 +3405,12 @@ function initDragMode() {
                     draggedElement.style.width = '';
                     draggedElement.style.zIndex = '';
                 }
-            }
-            
-            // Remove placeholder
-            if (placeholder && placeholder.parentNode) {
-                placeholder.parentNode.removeChild(placeholder);
-                placeholder = null;
+                
+                // Remove placeholder only if it was just a click
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                    placeholder = null;
+                }
             }
             
             draggedElement.classList.remove('dragging');
@@ -3499,13 +3500,14 @@ function initDragMode() {
                 draggedElement.style.top = '';
                 draggedElement.style.width = '';
                 draggedElement.style.zIndex = '';
+                
+                // Remove placeholder only if it was just a tap (not a drag)
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                    placeholder = null;
+                }
             }
-            
-            // Remove placeholder
-            if (placeholder && placeholder.parentNode) {
-                placeholder.parentNode.removeChild(placeholder);
-                placeholder = null;
-            }
+            // If it was a drag, keep the placeholder to prevent grid reflow
             
             draggedElement.classList.remove('dragging');
             draggedElement = null;
@@ -3568,14 +3570,8 @@ function initDragMode() {
                 item.classList.remove('draggable', 'dragging');
                 delete item.dataset.dragMode;
                 
-                // Reset position if needed
-                if (item.dataset.initialLeft && item.dataset.initialTop) {
-                    item.style.position = '';
-                    item.style.left = '';
-                    item.style.top = '';
-                    item.style.zIndex = '';
-                    item.style.width = '';
-                }
+                // Don't reset positions - keep images where they were dropped
+                // Only remove dragging class, but keep the fixed positioning
             });
             
             images.forEach(img => {
