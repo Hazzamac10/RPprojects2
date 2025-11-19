@@ -3340,6 +3340,13 @@ function initDragMode() {
             portfolioItem.dataset.initialTop = rect.top + window.scrollY + 'px';
         }
 
+        // Check if element is already fixed (from previous drag)
+        const isAlreadyFixed = portfolioItem.style.position === 'fixed';
+        
+        // Store the current visual position FIRST - before any DOM changes
+        const currentLeft = rect.left;
+        const currentTop = rect.top;
+        
         // Create placeholder to prevent layout shift
         placeholder = document.createElement('div');
         placeholder.style.width = rect.width + 'px';
@@ -3347,17 +3354,19 @@ function initDragMode() {
         placeholder.style.visibility = 'hidden';
         placeholder.style.pointerEvents = 'none';
         placeholder.style.flexShrink = '0';
-        portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
-
-        // Store the current visual position before making it fixed
-        const currentLeft = rect.left;
-        const currentTop = rect.top;
+        
+        // Only insert placeholder if element is not already fixed (to avoid affecting fixed element)
+        if (!isAlreadyFixed && portfolioItem.parentNode) {
+            portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
+        }
 
         portfolioItem.classList.add('dragging');
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
         portfolioItem.style.width = rect.width + 'px';
-        // Keep it in the exact same visual position initially
+        
+        // CRITICAL: Set position immediately using the rect we got BEFORE any DOM changes
+        // This prevents any jump - the element stays exactly where it visually appears
         portfolioItem.style.left = currentLeft + 'px';
         portfolioItem.style.top = currentTop + 'px';
         
@@ -3449,6 +3458,13 @@ function initDragMode() {
             portfolioItem.dataset.initialTop = rect.top + window.scrollY + 'px';
         }
 
+        // Check if element is already fixed (from previous drag)
+        const isAlreadyFixed = portfolioItem.style.position === 'fixed';
+        
+        // Store the current visual position FIRST - before any DOM changes
+        const currentLeft = rect.left;
+        const currentTop = rect.top;
+        
         // Create placeholder to prevent layout shift
         placeholder = document.createElement('div');
         placeholder.style.width = rect.width + 'px';
@@ -3456,17 +3472,19 @@ function initDragMode() {
         placeholder.style.visibility = 'hidden';
         placeholder.style.pointerEvents = 'none';
         placeholder.style.flexShrink = '0';
-        portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
-
-        // Store the current visual position before making it fixed
-        const currentLeft = rect.left;
-        const currentTop = rect.top;
+        
+        // Only insert placeholder if element is not already fixed (to avoid affecting fixed element)
+        if (!isAlreadyFixed && portfolioItem.parentNode) {
+            portfolioItem.parentNode.insertBefore(placeholder, portfolioItem);
+        }
 
         portfolioItem.classList.add('dragging');
         portfolioItem.style.position = 'fixed';
         portfolioItem.style.zIndex = '10000';
         portfolioItem.style.width = rect.width + 'px';
-        // Keep it in the exact same visual position initially
+        
+        // CRITICAL: Set position immediately using the rect we got BEFORE any DOM changes
+        // This prevents any jump - the element stays exactly where it visually appears
         portfolioItem.style.left = currentLeft + 'px';
         portfolioItem.style.top = currentTop + 'px';
     };
