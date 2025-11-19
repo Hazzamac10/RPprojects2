@@ -734,7 +734,7 @@ body::before {
 .hero-stats-wrapper {
     position: relative;
     max-width: 1400px;
-    margin: 12rem auto 0;
+    margin: 15rem auto 0;
     padding: 0 4rem;
     border-top: 1px solid var(--border-light);
     padding-top: 5rem;
