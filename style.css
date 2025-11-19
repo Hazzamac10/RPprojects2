@@ -533,8 +533,8 @@ body::before {
 .hero-image-carousel {
     position: relative;
     width: 100%;
-    /* Full width of the stats wrapper so it matches the statistics section */
-    max-width: 100%;
+    /* Slightly narrower than the stats wrapper so the right edge comes in a bit */
+    max-width: 92%;
     /* Taller image */
     height: 500px;
     border-radius: 16px;
@@ -545,7 +545,8 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0.75rem auto 3rem;
+    /* Align with left edge of stats, pull right edge in slightly */
+    margin: 0.75rem 0 3rem;
 }
 
 .carousel-image {
