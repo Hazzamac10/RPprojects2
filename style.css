@@ -451,7 +451,8 @@ body::before {
 
 /* Hero Section - Futuristic & Slick */
 .hero {
-    padding: 8.5rem 0 10rem;
+    /* Reduce overall hero panel height by ~15% (less tall) */
+    padding: 8.5rem 0 8.5rem;
     background: var(--bg-primary);
     position: relative;
     overflow: hidden;
