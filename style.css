@@ -533,8 +533,10 @@ body::before {
 .hero-image-carousel {
     position: relative;
     width: 100%;
-    max-width: 750px;
-    height: 350px;
+    /* Full width of the stats wrapper so it matches the statistics section */
+    max-width: 100%;
+    /* Slightly longer image */
+    height: 400px;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(35, 134, 255, 0.05);
