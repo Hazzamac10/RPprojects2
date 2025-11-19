@@ -744,13 +744,15 @@ body::before {
     font-family: 'Playfair Display', serif;
     color: var(--text-primary);
     margin-bottom: 2.5rem;
-    line-height: 1.1;
+    line-height: 1.2;
     letter-spacing: -0.03em;
     max-width: 100%;
     word-wrap: break-word;
     text-align: left;
     position: relative;
     z-index: 2;
+    padding-bottom: 0.2em;
+    overflow: visible;
     background: linear-gradient(
         var(--heading-gradient-angle, 135deg),
         var(--heading-gradient-start, var(--text-primary, #1e3a5f)) 0%,
