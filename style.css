@@ -719,10 +719,6 @@ body::before {
     padding: 0 4rem;
     position: relative;
     z-index: 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: start;
 }
 
 .hero-text {
@@ -732,6 +728,7 @@ body::before {
     flex-direction: column;
     justify-content: center;
     position: relative;
+    max-width: 900px;
 }
 
 .hero-stats-wrapper {
