@@ -457,7 +457,7 @@ body::before {
     overflow: hidden;
     min-height: auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     /* Slightly stronger separation line across full page width */
     border-bottom: 1px solid rgba(15, 23, 42, 0.12);
 }
