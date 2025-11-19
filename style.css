@@ -533,7 +533,7 @@ body::before {
 .hero-image-carousel {
     position: relative;
     width: 100%;
-    max-width: 650px;
+    max-width: 750px;
     height: 350px;
     border-radius: 16px;
     overflow: hidden;
@@ -566,7 +566,7 @@ body::before {
     height: 100%;
     object-fit: cover;
     display: block;
-    transform: scale(1.06);
+    transform: scale(1.15);
 }
 
 .carousel-drawing {
