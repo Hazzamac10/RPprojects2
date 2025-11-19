@@ -734,7 +734,7 @@ body::before {
 .hero-stats-wrapper {
     position: relative;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 10rem auto 0;
     padding: 0 4rem;
 }
 
@@ -884,7 +884,7 @@ body::before {
 
 /* Hero Stats - Modern Cards */
 .hero-stats {
-    margin: 10rem auto 0;
+    margin: 0 auto;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
