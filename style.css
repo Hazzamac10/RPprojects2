@@ -520,7 +520,7 @@ body::before {
 }
 
 .hero-stats {
-    margin: 8rem auto 0;
+    margin: 6.5rem auto 0;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
