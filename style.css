@@ -451,7 +451,7 @@ body::before {
 
 /* Hero Section - Futuristic & Slick */
 .hero {
-    padding: 10rem 0 10rem;
+    padding: 9rem 0 10rem;
     background: var(--bg-primary);
     position: relative;
     overflow: hidden;
