@@ -3615,6 +3615,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('hero-pdf-canvas')
     );
 
+    // Render portfolio PDF drawings to canvas
+    initPortfolioDrawings();
+
     // FormSubmit handles form submission automatically
     initFormSubmitHandler();
 });
@@ -3815,9 +3818,69 @@ function initPortfolioLightbox() {
                 e.stopPropagation();
                 return;
             }
-            imgEl.src = img.currentSrc || img.src;
+            
+            // Handle canvas elements (PDF drawings)
+            if (img.tagName === 'CANVAS') {
+                imgEl.src = img.toDataURL('image/png');
+            } else {
+                imgEl.src = img.currentSrc || img.src;
+            }
             overlay.classList.add('open');
         });
+    });
+    
+    // Also handle canvas elements directly
+    const canvases = document.querySelectorAll('canvas.portfolio-drawing');
+    canvases.forEach((canvas) => {
+        canvas.style.cursor = 'zoom-in';
+        canvas.addEventListener('click', (e) => {
+            const portfolioItem = canvas.closest('figure.portfolio-item');
+            if (portfolioItem && (portfolioItem.dataset.dragMode === 'true' || portfolioItem.classList.contains('draggable'))) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+            imgEl.src = canvas.toDataURL('image/png');
+            overlay.classList.add('open');
+        });
+    });
+}
+
+async function renderPortfolioPdfToCanvas(pdfUrl, canvas) {
+    if (!canvas || !window['pdfjsLib']) return;
+    try {
+        const pdf = await pdfjsLib.getDocument({ url: pdfUrl }).promise;
+        const page = await pdf.getPage(1);
+        // Get container dimensions
+        const container = canvas.closest('.portfolio-item');
+        const containerWidth = container ? container.clientWidth : 400;
+        const desiredHeight = Math.floor(containerWidth * 0.75); // 4:3 aspect ratio
+        
+        // Fit page to canvas height while maintaining aspect ratio
+        const viewport = page.getViewport({ scale: 1 });
+        const scale = desiredHeight / viewport.height;
+        const fitted = page.getViewport({ scale });
+        canvas.width = Math.floor(fitted.width);
+        canvas.height = Math.floor(fitted.height);
+        const ctx = canvas.getContext('2d');
+        
+        // White background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        await page.render({ canvasContext: ctx, viewport: fitted }).promise;
+    } catch (e) {
+        console.error('Failed to render portfolio PDF:', e);
+    }
+}
+
+function initPortfolioDrawings() {
+    const drawingCanvases = document.querySelectorAll('canvas[data-pdf]');
+    drawingCanvases.forEach(canvas => {
+        const pdfUrl = canvas.getAttribute('data-pdf');
+        if (pdfUrl) {
+            renderPortfolioPdfToCanvas(pdfUrl, canvas);
+        }
     });
 }
 
