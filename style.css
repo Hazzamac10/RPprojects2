@@ -737,14 +737,12 @@ body::before {
 .hero-stats-wrapper {
     position: relative;
     max-width: 1400px;
-    margin: 4rem auto 0;
+    margin: 0 auto;
     padding: 0 4rem;
-    display: flex;
-    justify-content: flex-end;
 }
 
 .hero-stats {
-    margin: 0;
+    margin: 8rem auto 0;
     padding: 0;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -752,7 +750,6 @@ body::before {
     position: relative;
     z-index: 2;
     align-items: start;
-    max-width: 500px;
 }
 
 .hero-image-carousel {
@@ -768,6 +765,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-left: auto;
 }
 
 .carousel-image {
